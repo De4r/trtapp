@@ -1,0 +1,33 @@
+{% extends "main/files_wrapper.html" %}
+
+
+{% block files %}
+<h3 class="text-center">Pliki</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nazwa</th>
+            <th>Data</th>
+            <th>Pobierz</th>
+            <th>Usuń</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for file in files %}
+        <tr>
+            <td>{{ file.file_name }}</td>
+            <td> {{ file.upload_date }}</td>
+            <td>
+                <a href="{{ file.file_object.url }}" class="btn btn-primary bt-sm" target="_blank">Pobierz</a>
+            </td>
+            <td>
+                <form action="{% url 'main:delete_file' file.pk %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger bt-sm">Usuń</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

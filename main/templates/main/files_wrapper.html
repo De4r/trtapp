@@ -1,0 +1,27 @@
+{% extends "main/base_layout.html" %}
+
+{% block content %}
+<div class="jumbotron">
+
+    <h2 class="text-center">Pliki</h2>
+    <div class="row" style="margin-bottom: 20px;">
+        <div class="col">
+            <button class="btn btn-block btn-primary">
+                <a href="{% url 'main:files_list' %}"><h3>Lista</h3></a>
+        </div>
+        <div class="col">
+            </button>
+            <button class="btn btn-block btn-primary">
+                <a href="{% url 'main:upload_file' %}"><h3>Dodaj nowy</h3></a>
+            </button>
+        </div>
+    </div>
+
+    {% block files %}
+
+    {% endblock %}
+</div>
+
+
+</div>
+{% endblock %}
