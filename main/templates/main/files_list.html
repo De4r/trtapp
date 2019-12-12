@@ -2,10 +2,10 @@
 
 
 {% block files %}
-<h3 class="text-center">Pliki</h3>
-<table class="table">
+<h3 class="text-center">Dostępne pliki w bazie danych</h3>
+<table class="table table-hover">
     <thead>
-        <tr>
+        <tr class="table">
             <th>Nazwa</th>
             <th>Data</th>
             <th>Pobierz</th>
@@ -14,20 +14,21 @@
     </thead>
     <tbody>
         {% for file in files %}
-        <tr>
+        <tr class="table">
             <td>{{ file.file_name }}</td>
             <td> {{ file.upload_date }}</td>
             <td>
-                <a href="{{ file.file_object.url }}" class="btn btn-primary bt-sm" target="_blank">Pobierz</a>
+                <a href="{{ file.file_object.url }}" class="btn btn-primary bt-sm" data-toggle="tooltip" data-placement="top" title="Pobierz plik" target="_blank">Pobierz</a>
             </td>
             <td>
                 <form action="{% url 'main:delete_file' file.pk %}" method="post">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-danger bt-sm">Usuń</button>
+                    <button type="submit" class="btn btn-danger bt-sm" data-toggle="tooltip" data-placement="top" title="Usuń plik z serwera">Usuń</button>
                 </form>
             </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
+<div class="push"></div>
 {% endblock %}

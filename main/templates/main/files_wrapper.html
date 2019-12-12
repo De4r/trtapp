@@ -6,13 +6,13 @@
     <h2 class="text-center">Pliki</h2>
     <div class="row" style="margin-bottom: 20px;">
         <div class="col">
-            <button class="btn btn-block btn-primary">
-                <a href="{% url 'main:files_list' %}"><h3>Lista</h3></a>
+            <button class="btn btn-block btn-primary" data-toggle="tooltip" data-placement="top" title="Lista aktualnych plików w bazie danych">
+                <a href="{% url 'main:files_list' %}" class="text-white"><h3>Lista</h3></a>
         </div>
         <div class="col">
             </button>
-            <button class="btn btn-block btn-primary">
-                <a href="{% url 'main:upload_file' %}"><h3>Dodaj nowy</h3></a>
+            <button class="btn btn-block btn-primary text-white" data-toggle="tooltip" data-placement="top" title="Formularz dodania nowego pliku na do bazy danych">
+                <a href="{% url 'main:upload_file' %}" class="text-white"><h3>Dodaj nowy</h3></a>
             </button>
         </div>
     </div>
