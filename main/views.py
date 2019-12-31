@@ -1,17 +1,20 @@
 from django.shortcuts import render, redirect, reverse
 from django.http import HttpResponse
 from .models import UploadedFile
-from django.contrib.auth.forms import AuthenticationForm
-from django.core.files.storage import FileSystemStorage
 from .forms import UploadedFileForm
 
 # Create your views here.
 
+
 def homepage(request):
     return render(request, 'main/home.html')
 
+def isp_view(request):
+    return render(request, 'main/isp.html')
+
 def trt(request):
     return render(request, 'main/trt.html')
+
 
 def files_list_view(request):
     uploaded_files = UploadedFile.objects.all().order_by('-upload_date')
@@ -19,11 +22,14 @@ def files_list_view(request):
         'files': uploaded_files,
     })
 
+
 def solver_view(request):
     return render(request, 'main/solver.html')
 
+
 def parameters_view(request):
     return render(request, 'main/parameters.html')
+
 
 def upload_file(request):
     if request.method == 'POST':
@@ -36,6 +42,7 @@ def upload_file(request):
     return render(request, 'main/upload_file.html', {
         'form': form,
     })
+
 
 def delete_file(request, pk):
     if request.method == 'POST':

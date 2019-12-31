@@ -27,5 +27,6 @@ urlpatterns = [
     path('trt/<int:pk>', views.delete_file, name='delete_file'),
     path('trt/solver', views.solver_view, name='solver'),
     path('trt/parameters', views.parameters_view, name='parameters'),
+    path('isp/', views.isp_view, name='isp'),
 ]
 
