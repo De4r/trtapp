@@ -13,8 +13,13 @@
         <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="5"
             aria-valuemin="0" aria-valuemax="100" style="width: 5%"></div>
     </div>
-</div>
+    {% for plot in plot_div %}
+    <div>
+        {% autoescape off %}
+        {{ plot }}
+        {% endautoescape %}
+    </div>
+    {% endfor %}
 
-<div class="push"></div>
 </div>
 {% endblock %}
