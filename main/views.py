@@ -6,6 +6,8 @@ from plotly.offline import plot
 # from plotly.subplots import make_subplots
 import plotly.graph_objs as go
 import pandas as pd
+import os
+from django.conf import settings
 # Create your views here.
 
 
@@ -17,8 +19,10 @@ def homepage(request):
 def isp_view(request):
     # ylabel = ['Temp. *C', 'Cisn. hPa', 'Poz. nasw. lx.']
     f = UploadedFile.objects.get(file_name='ISP')
-    filename = f.file_object.url
-    filename = filename[1:]
+    filename = f.file_object.url[1:]
+    print(filename)
+    print(settings.BASE_DIR)
+    filename = os.path.join(settings.BASE_DIR, filename).replace('\\','/')
     print(filename)
 
     # filename = 'media/files/02-01-2020_10_47_26_LOGS_ISP.csv'

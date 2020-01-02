@@ -12,19 +12,16 @@
 
 <body style="background-color: #ffffff; height: 100%; display: flex; flex-direction: column;">
     {% include "main/includes/navbar.html" %}
-    <div class="container" style="flex: 1 0 auto;"></div>
-    <main>
-        <!-- <div class="container" style="flex: 1 0 auto;"> -->
+    <div class="container" style="flex: 1 0 auto;">
+        <main>
             <div style="padding: 30px 0;">
                 {% block content %}
 
                 {% endblock %}
             </div>
-            <!-- <div class="push"></div> -->
-        <!-- </div> -->
-
-    </main>
-</div>
+        </main>
+    </div>
+    </div>
 
     {% include "main/includes/footer.html" %}
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
