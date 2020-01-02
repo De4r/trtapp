@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from .models import UploadedFile
 from .forms import UploadedFileForm
 from plotly.offline import plot
-from plotly.subplots import make_subplots
+# from plotly.subplots import make_subplots
 import plotly.graph_objs as go
 import pandas as pd
 # Create your views here.
@@ -15,7 +15,7 @@ def homepage(request):
 
 
 def isp_view(request):
-    ylabel = ['Temp. *C', 'Cisn. hPa', 'Poz. nasw. lx.']
+    # ylabel = ['Temp. *C', 'Cisn. hPa', 'Poz. nasw. lx.']
     upload_files = UploadedFile.objects.all()
     for f in upload_files:
         if f.file_name == 'ISP':
@@ -32,10 +32,9 @@ def isp_view(request):
             col = temp+str(j)
             fig.add_trace(go.Scatter(
                 x=df['Time'], y=df[col], mode="lines", name=col))
-            
-        plot_div.append(plot(fig,
-                output_type='div', include_plotlyjs=False))
 
+        plot_div.append(plot(fig,
+                             output_type='div', include_plotlyjs=False))
 
     return render(request, 'main/isp.html',
                   context={'plot_div': plot_div})
@@ -65,9 +64,9 @@ def parameters_view(request):
                                 opacity=0.8, marker_color='green')],
                     output_type='div', include_plotlyjs=False)
     plot_div2 = plot([go.Scatter(x=x_data, y=y_data2,
-                                mode='lines', name='test',
-                                opacity=0.8, marker_color='green')],
-                    output_type='div', include_plotlyjs=False)
+                                 mode='lines', name='test',
+                                 opacity=0.8, marker_color='green')],
+                     output_type='div', include_plotlyjs=False)
 
     return render(request, 'main/parameters.html',
                   context={'plot_div': plot_div, 'plot_div2': plot_div2})
