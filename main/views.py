@@ -16,7 +16,12 @@ def homepage(request):
 
 def isp_view(request):
     ylabel = ['Temp. *C', 'Cisn. hPa', 'Poz. nasw. lx.']
-    filename = 'media/files/02-01-2020_10_47_26_LOGS_ISP.csv'
+    upload_files = UploadedFile.objects.all()
+    for f in upload_files:
+        if f.file_name == 'ISP':
+            filename = f.file_object.url
+
+    # filename = 'media/files/02-01-2020_10_47_26_LOGS_ISP.csv'
     df = pd.read_csv(filename)
     df['Time'] = pd.to_datetime(df['Time'], unit='s')
     plot_div = []
