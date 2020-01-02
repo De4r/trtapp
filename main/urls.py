@@ -29,4 +29,3 @@ urlpatterns = [
     path('trt/parameters', views.parameters_view, name='parameters'),
     path('isp/', views.isp_view, name='isp'),
 ]
-
