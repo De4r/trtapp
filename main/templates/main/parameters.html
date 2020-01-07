@@ -2,23 +2,152 @@
 
 {% block content %}
 <div class="jumbotron">
-    <h2 class="text-center">Parametry</h2>
-    <br>
-    <p><h3 class="text-center">W trakcie budowy ...</h3></p>
-    <div class="progress">
-        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%"></div>
+  <h2 class="text-center">Parametry</h2>
+  <br>
+  
+
+  <form action="" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="form-group">
+      <label class="col-form-label" for="id_model_name">Nazwa modelu</label>
+      <input type="text" class="form-control" name='model_name' placeholder="Nazwa modelu" id="id_model_name">
+    </div>
+
+    <div class="form-group">
+      <label class="col-form-label" for="id_model_desc">Opis modelu</label>
+      <input type="text" class="form-control" name='model_desc' placeholder="Opis modelu" id="id_model_desc">
+    </div>
+
+    <div class="form-group">
+      <label for="id_chosen_file">Wybierz plik</label>
+      <select class="form-control" id="id_chosen_file" name='chosen_file'>
+        {% for file in files %}
+        <option> {{ file.file_name }} </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <label for="test_param" ><h5>Paramtery testu</h3></label>
+    <div class="row" id="test_param">
+      <div class="col">
+        <div class="form-group">
+          <label class="col-form-label" for="id_qv">Średni przepływ [m^3/s]</label>
+          <input type="text" class="form-control" name='qv' placeholder="qv" id="id_qv">
+        </div>
       </div>
-      <div>
-        {% autoescape off %}
-        {{ plot_div }}
-        {% endautoescape %}
+      <div class="col">
+        <div class="form-group">
+          <label class="col-form-label" for="id_q">Średnia moc cieplna [W]</label>
+          <input type="text" class="form-control" name='q' placeholder="q" id="id_q">
+        </div>
       </div>
+      <div class="col">
+        <div class="form-group">
+          <label class="col-form-label" for="id_v">Średnia prędkość przepływu [m/s]</label>
+          <input type="text" class="form-control" name='v' placeholder="v" id="id_v">
+        </div>
+      </div>
+    </div>
+
+    <label for="medium"><h5>Parametry medium</h5></label>
+    <div class="row" id="medium">
+
       <br>
-      <div>
-        {% autoescape off %}
-        {{ plot_div2 }}
-        {% endautoescape %}
+      <div class="col">
+        <div class="form-group" style=>
+          <label class="col-form-label" for="id_cp_m">Ciepło właściwe [J/(kgK)]</label>
+          <input type="text" class="form-control" name="cp_m" placeholder="cp_m" id="id_cp_m">
+        </div>
+        <div class="form-group">
+          <label class="col-form-label" for="ro_m">Gęstość medium [kg/m^3]</label>
+          <input type="text" class="form-control" name="ro_m" placeholder="ro_m" id="id_ro_m">
+        </div>
       </div>
+
+      <div class="col">
+        <div class="form-group">
+          <label class="col-form-label" for="id_mi_m">Współczynnik lepkości dynaminczej [x]</label>
+          <input type="text" class="form-control" name="mi_m" placeholder="mi_m" id="id_mi_m">
+        </div>
+        <div class="form-group">
+          <label class="col-form-label" for="id_lam_m">Współczynnik przewodzenia ciepła [x]</label>
+          <input type="text" class="form-control" name="lam_m" placeholder="lam_m" id="id_lam_m">
+        </div>
+      </div>
+    </div>
+
+    <label for="rocks"><h5>Parametry górotworu</h5></label>
+    <div class="row" id="rocks">
+      <div class="col">
+        <div class="form-group">
+          <label class="col-form-label" for="id_cp">Ciepło właściwe [J/(kgK)]</label>
+          <input type="text" class="form-control" name='cp' placeholder="cp" id="id_cp">
+        </div>
+      </div>
+      <div class="col">
+        <div class="form-group">
+          <label class="col-form-label" for="id_ro">Gęstość [kg/m^3]</label>
+          <input type="text" class="form-control" name='ro' placeholder="ro" id="id_ro">
+        </div>
+      </div>
+      <div class="col">
+        <div class="form-group">
+          <label class="col-form-label" for="id_alfa">Dyfuzyjność [x]</label>
+          <input type="text" class="form-control" name='alfa' placeholder="&#945" id="id_alfa">
+        </div>
+      </div>
+    </div>
+
+    <label for="bhex"><h5>Parametry wymiennika</h5></label>
+    <div class="row" id="bhex">
+      <div class="col">
+        <div class="form-group">
+          <label class="col-form-label" for="id_h">Głębkość wymiennika [m]</label>
+          <input type="text" class="form-control" name='h' placeholder="h" id="id_h">
+        </div>
+      </div>
+      <div class="col">
+        <div class="form-group">
+          <label class="col-form-label" for="id_db">Średnica otworu [m]</label>
+          <input type="text" class="form-control" name='db' placeholder="db" id="id_db">
+        </div>
+      </div>
+    </div>
+
+    <div class="row" id="bhex_2">
+      <div class="col">
+        <div class="form-group">
+          <label class="col-form-label" for="id_d_out">Średnica zewnętrzna rury [m]</label>
+          <input type="text" class="form-control" name='d_out' placeholder="d_out" id="id_d_out">
+        </div>
+      </div>
+      <div class="col">
+        <div class="form-group">
+          <label class="col-form-label" for="id_d_inn">Średnica wewnętrzna rury [m]</label>
+          <input type="text" class="form-control" name='d_inn' placeholder="d_inn" id="id_d_inn">
+        </div>
+      </div>
+      <div class="col">
+        <div class="form-group">
+          <label class="col-form-label" for="id_r_g">Grubość ścianki rury [m]</label>
+          <input type="text" class="form-control" name='r_g' placeholder="r_g" id="id_r_g">
+        </div>
+      </div>
+    </div>
+
+
+    <button type="submit" class="btn btn-primary" data-toggle="tooltip" data-placement="top"
+      title="Zapisz parametry">Zapisz</button>
+  </form>
+
+  <!-- <br>
+  <div>
+    {% autoescape off %}
+    {{ plot_div }}
+    {% endautoescape %}
+  </div> -->
+
 </div>
 
 {% endblock %}

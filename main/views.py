@@ -20,14 +20,12 @@ def isp_view(request):
     # ylabel = ['Temp. *C', 'Cisn. hPa', 'Poz. nasw. lx.']
     f = UploadedFile.objects.get(file_name='ISP')
     filename = f.file_object.url[1:]
-    print(filename)
-    print(settings.BASE_DIR)
-    filename = os.path.join(settings.BASE_DIR, filename).replace('\\','/')
-    print(filename)
+    filename = os.path.join(settings.BASE_DIR, filename).replace('\\', '/')
 
-    # filename = 'media/files/02-01-2020_10_47_26_LOGS_ISP.csv'
     df = pd.read_csv(filename)
     df['Time'] = pd.to_datetime(df['Time'], unit='s')
+    df['Time'] = df['Time'].dt.tz_localize(
+        "GMT").dt.tz_convert('Europe/Warsaw')
     plot_div = []
 
     for i, temp in zip(range(3), ('T_', 'P_', 'L_')):
@@ -41,7 +39,8 @@ def isp_view(request):
                              output_type='div', include_plotlyjs=False))
 
     return render(request, 'main/isp.html',
-                  context={'plot_div': plot_div})
+                  context={'plot_div': plot_div,
+                           'file': f})
 
 
 def trt(request):
@@ -56,24 +55,32 @@ def files_list_view(request):
 
 
 def solver_view(request):
-    return render(request, 'main/solver.html')
-
-
-def parameters_view(request):
     x_data = [0, 1, 2, 3]
     y_data = [x**2 for x in x_data]
-    y_data2 = [x**4 for x in x_data]
+
     plot_div = plot([go.Scatter(x=x_data, y=y_data,
                                 mode='lines', name='test',
                                 opacity=0.8, marker_color='green')],
                     output_type='div', include_plotlyjs=False)
-    plot_div2 = plot([go.Scatter(x=x_data, y=y_data2,
-                                 mode='lines', name='test',
-                                 opacity=0.8, marker_color='green')],
-                     output_type='div', include_plotlyjs=False)
+
+    return render(request, 'main/solver.html',
+                  context={'plot_div': plot_div})
+    
+
+
+def parameters_view(request):
+    if request.method == 'POST':
+        chosen_file = request.POST.get('chosen_file')
+        f = UploadedFile.objects.get(file_name=chosen_file)
+        file_path = os.path.join(
+            settings.BASE_DIR, f.file_object.url[1:]).replace('\\', '/')
+        print(file_path)
+
+    uploaded_files = UploadedFile.objects.all().order_by('-upload_date')
 
     return render(request, 'main/parameters.html',
-                  context={'plot_div': plot_div, 'plot_div2': plot_div2})
+                  context={'files': uploaded_files, })
+    
 
 
 def upload_file(request):
