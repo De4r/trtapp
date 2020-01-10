@@ -2,27 +2,73 @@
 
 {% block content %}
 <div class="jumbotron">
+    <div class="container">
+        <h2 class="text-center">Dane pomiarowe z projektu <br> Inteligentne Systemy Pomarowe</h2>
+        <br>
+        <form action="" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-8">
+                        <!-- <label for="id_chosen_file">Wybierz plik</label> -->
+                        <select class="custom-select" id="id_chosen_file" name='chosen_file'>
+                            {% for file in files %}
+                            <option> {{ file.file_name }} </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-4">
+                        <button type="submit" class="btn btn-primary" data-toggle="tooltip" data-placement="top"
+                            title="Pokaż wykresy">Wybierz</button>
+                    </div>
+                </div>
+        </form>
 
-    <h2 class="text-center">Dane pomiarowe z projektu <br> Inteligentne Systemy Pomarowe</h2>
-
+        <br>
+        <div class="row">
+            <div class="col text-center">
+                <label for="id_file_name"> Plik: </label>
+                <h4 id="id_file_name"> {{file.file_name }} </h4>
+            </div>
+            <div class="col text-center">
+                <label for="id_upload_Date"> Data: </label>
+                <h4 id="id_upload_Date"> {{ file.upload_date }} </h4id="id_file_name">
+            </div>
+        </div>
+        <div>
+            <label for="id_file_desc">
+                <h4>Opis:</h4>
+            </label>
+            <div id="id_file_desc">
+                <p class="lead">
+                    <h5 class="text-justify"> {{ file.file_desc }} </h5>
+                </p>
+            </div>
+        </div>
+        <br>
+    </div>
+    <div style="max-width: none;">
+        {% for plot in plot_div %}
+        <div class="container" style="max-width: none;">
+            {% autoescape off %}
+            {{ plot }}
+            {% endautoescape %}
+        </div>
+        {% endfor %}
+    </div>
     <br>
-    <p>
-        <h3 class="text-center">W trakcie budowy ...</h3>
+    <p class="text-justify" style="text-size-adjust: 1.2em;">
+        W przypadku zastosowanej korekcji temperatur zastosowano następujące wartości:
+        <ul>
+            <li>Moduł 1 (Arduino Uno):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>-1.715 &#176C </b></li>
+            <li>Moduł 2 (Arduino Nano):&nbsp; <b>-1.325 &#176C </b></li>
+            <li>Moduł 3 (Arduino Nano):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>-1.05 &#176C </b></li>
+        </ul>
+        Wartości te zostały wynzaczone w porówaniu z termometrem rtęciowym oraz cyfrowym.
+        Wartości powyższych termometrów w każdej chwili pomiaru były zgodne.
+        Zazwyczaj za moduł bazowy (adres 00) służył moduł 2.
     </p>
-    <div class="progress">
-        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="5"
-            aria-valuemin="0" aria-valuemax="100" style="width: 5%"></div>
-    </div>
-    
-    <br>
-    <p>Plik: {{file.file_name }} <br> {{ file.upload_date }} </p>
-    {% for plot in plot_div %}
-    <div>
-        {% autoescape off %}
-        {{ plot }}
-        {% endautoescape %}
-    </div>
-    {% endfor %}
+
 
 </div>
 {% endblock %}

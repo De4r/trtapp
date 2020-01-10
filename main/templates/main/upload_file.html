@@ -20,6 +20,19 @@
             <label for="id_file_object">Plik</label>
             <input type="file" class="form-control-file" name="file_object" required="" id="id_file_object">
         </div>
+        <label for="file_tags_options">Wybierz przedmiot z którym jest związany plik</label>
+        <div class="form-check" id="file_tags_options">
+            <label class="form-check-label">
+              <input type="radio" class="form-check-input" name="file_tag" id="id_zszi" value="ZSZI" checked="">
+              Zintegrowane systemy zarządzania informacja
+            </label>
+          </div>
+          <div class="form-check">
+          <label class="form-check-label">
+              <input type="radio" class="form-check-input" name="file_tag" id="id_isp" value="ISP">
+              Inteligentne systemy pomiarowe
+            </label>
+          </div>
         
         <button type="submit" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Prześlij plik na serwer">Dodaj</button>
         </div>

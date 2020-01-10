@@ -8,6 +8,7 @@ import plotly.graph_objs as go
 import pandas as pd
 import os
 from django.conf import settings
+from .mFuncs import plotIsp
 # Create your views here.
 
 
@@ -17,30 +18,21 @@ def homepage(request):
 
 
 def isp_view(request):
-    # ylabel = ['Temp. *C', 'Cisn. hPa', 'Poz. nasw. lx.']
-    f = UploadedFile.objects.get(file_name='ISP')
-    filename = f.file_object.url[1:]
-    filename = os.path.join(settings.BASE_DIR, filename).replace('\\', '/')
-
-    df = pd.read_csv(filename)
-    df['Time'] = pd.to_datetime(df['Time'], unit='s')
-    df['Time'] = df['Time'].dt.tz_localize(
-        "GMT").dt.tz_convert('Europe/Warsaw')
-    plot_div = []
-
-    for i, temp in zip(range(3), ('T_', 'P_', 'L_')):
-        fig = go.Figure()
-        for j in range(3):
-            col = temp+str(j)
-            fig.add_trace(go.Scatter(
-                x=df['Time'], y=df[col], mode="lines", name=col))
-
-        plot_div.append(plot(fig,
-                             output_type='div', include_plotlyjs=False))
-
+    uploaded_files = UploadedFile.objects.filter(
+        file_tag='ISP').order_by('-upload_date')
+    if request.method == 'POST':
+        chosen_file = request.POST.get('chosen_file')
+        f = UploadedFile.objects.get(file_name=chosen_file)
+        plot_div = plotIsp(f)
+        
+    else:
+        f = uploaded_files[0]
+        plot_div = plotIsp(f)
+    
     return render(request, 'main/isp.html',
-                  context={'plot_div': plot_div,
-                           'file': f})
+                      context={'files': uploaded_files,
+                               'plot_div': plot_div,
+                               'file': f})
 
 
 def trt(request):
@@ -65,7 +57,6 @@ def solver_view(request):
 
     return render(request, 'main/solver.html',
                   context={'plot_div': plot_div})
-    
 
 
 def parameters_view(request):
@@ -80,7 +71,6 @@ def parameters_view(request):
 
     return render(request, 'main/parameters.html',
                   context={'files': uploaded_files, })
-    
 
 
 def upload_file(request):
