@@ -1,0 +1,40 @@
+{% extends "main/parameters_wrapper.html" %}
+
+{% block parameters %}
+
+<h3 class="text-center">Dostępne modele parametrów w bazie danych</h3>
+<table class="table table-hover">
+  <thead>
+    <tr class="table">
+      <th>Nazwa</th>
+      <th>Data</th>
+      <th>Pokaż</th>
+      <th>Usuń</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for model in models %}
+    <tr class="table">
+      <td>{{ model.model_name }}</td>
+      <td> {{ model.created_date }}</td>
+      <td>
+        <form action="{% url 'main:parameters_show' model.pk %}" method="post">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-primary bt-sm" data-toggle="tooltip" data-placement="top"
+            title="Pokaż wartości">Pokaż</a>
+        </form>
+      </td>
+      <td>
+        <form action="{% url 'main:delete_parameters_model' model.pk %}" method="post">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger bt-sm" data-toggle="tooltip" data-placement="top"
+            title="Usuń model z serwera">Usuń</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+
+{% endblock %}

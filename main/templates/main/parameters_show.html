@@ -1,0 +1,182 @@
+{% extends "main/parameters_wrapper.html" %}
+
+{% block parameters %}
+<div class="text-center">
+  <div class="form-group">
+    <label class="col-form-label text-info" for="id_model_name"><h3>Model</h3></label>
+    <div class="container border border-info rounded-pill" id="id_model_name">
+      <h4>{{ model.model_name }}</h4>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="col-form-label text-info" for="id_model_desc"><h3>Opis</h3></label>
+    <div class="container border border-info rounded-pill" id="id_model_desc">
+      <h4>{{ model.model_desc }}</h4>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="col-form-label text-info" for="id_chosen_file"><h3>Plik</h3></label>
+    <div class="container border border-info rounded-pill" id="id_chosen_file">
+      <h4>{{ model.chosen_file }}</h4>
+    </div>
+  </div>
+
+  <br>
+
+  <label class="text-info" for="test_param">
+    <h3>Paramtery testu</h3>
+  </label>
+
+  <div class="row border border-info rounded-pill" id="test_param">
+    <div class="col">
+      <div class="form-group">
+        <label class="col-form-label text-muted" for="id_qv">Średni przepływ [m^3/s]</label>
+        <div class="container" id="id_qv">
+          <h4>{{ model.qv }}</h4>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="form-group">
+        <label class="col-form-label text-muted" for="id_q">Średnia moc cieplna [W]</label>
+        <div class="container" id="id_q">
+          <h4>{{ model.q }}</h4>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="form-group">
+        <label class="col-form-label text-muted" for="id_v">Średnia prędkość przepływu [m/s]</label>
+        <div class="container" id="id_v">
+          <h4>{{ model.v }}</h4>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <br>
+
+  <label class="text-info" for="medium">
+    <h3>Parametry medium</h3>
+  </label>
+  <div class="row border border-info rounded-pill id=" medium">
+
+    <div class="col">
+      <div class="form-group" style=>
+        <label class="col-form-label text-muted" for="id_cp_m">Ciepło właściwe [J/(kgK)]</label>
+        <div class="container" id="id_cp_m">
+          <h4>{{ model.cp_m }}</h4>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-form-label text-muted" for="ro_m">Gęstość medium [kg/m^3]</label>
+        <div class="container" id="id_ro_m">
+          <h4>{{ model.ro_m }}</h4>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="form-group">
+        <label class="col-form-label text-muted" for="id_mi_m">Współczynnik lepkości dynaminczej [x]</label>
+        <div class="container" id="id_mi_m">
+          <h4>{{ model.mi_m }}</h4>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-form-label text-muted" for="id_lam_m">Współczynnik przewodzenia ciepła [x]</label>
+        <div class="container" id="id_lam_m">
+          <h4>{{ model.lam_m }}</h4>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <br>
+
+  <label class="text-info" for="rocks">
+    <h3>Parametry górotworu</h3>
+  </label>
+  <div class="row border border-info rounded-pill" id="rocks">
+    <div class="col">
+      <div class="form-group">
+        <label class="col-form-label text-muted" for="id_cp">Ciepło właściwe [J/(kgK)]</label>
+        <div class="container" id="id_cp">
+          <h4>{{ model.cp }}</h4>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="form-group">
+        <label class="col-form-label text-muted" for="id_ro">Gęstość [kg/m^3]</label>
+        <div class="container" id="id_ro">
+          <h4>{{ model.ro }}</h4>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="form-group">
+        <label class="col-form-label text-muted" for="id_alfa">Dyfuzyjność [x]</label>
+        <div class="container" id="id_alfa">
+          <h4>{{ model.alfa }}</h4>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <br>
+
+  <label class="text-info" for="bhex">
+    <h3>Parametry wymiennika</h3>
+  </label>
+  <div class="border border-info rounded-pill">
+    <div class="row" id="bhex">
+      <div class="col">
+        <div class="form-group">
+          <label class="col-form-label text-muted" for="id_h">Głębkość wymiennika [m]</label>
+          <div class="container" id="id_h">
+            <h4>{{ model.H }}</h4>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="form-group">
+          <label class="col-form-label text-muted" for="id_db">Średnica otworu [m]</label>
+          <div class="container" id="id_db">
+            <h4>{{ model.D_b }}</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row" id="bhex_2">
+      <div class="col">
+        <div class="form-group">
+          <label class="col-form-label text-muted" for="id_d_out">Średnica zewnętrzna rury [m]</label>
+          <div class="container" id="id_d_out">
+            <h4>{{ model.d_out }}</h4>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="form-group">
+          <label class="col-form-label text-muted" for="id_d_inn">Średnica wewnętrzna rury [m]</label>
+          <div class="container" id="id_d_inn">
+            <h4>{{ model.d_inn }}</h4>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="form-group">
+          <label class="col-form-label text-muted" for="id_r_g">Grubość ścianki rury [m]</label>
+          <div class="container" id="id_r_g">
+            <h4>{{ model.r_g }}</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
