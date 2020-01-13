@@ -3,12 +3,114 @@
 {% block content %}
 <div class="container wrapper">
     <div class="jumbotron">
-        <h2>Homepage</h2>
+        <h2 class="text-primary text-center"><b>
+                Aplikacja TRT
+            </b></h2>
+        <span class="text-justify">
+            <h4 text="text-scondary">
+                Aplikacja służy do interpretacji testów reakcji termicznej górotworu.
+                Podzielona jest ona na następujące moduły:
+                <ul>
+                    <li>Moduł obsługujący pliki pomiarowe</li>
+                    <li>Moduł obsługujący wprowadzanie dodatkowych danych z testów</li>
+                    <li>Moduł obliczeniowy</li>
+                </ul>
+            </h4>
+        </span>
+
+        <br>
         <span>
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Harum nihil dignissimos culpa consequatur repellat
-            est
-            doloremque cupiditate sint quae veniam eum, optio facere nostrum facilis commodi odit necessitatibus eveniet
-            tenetur.
+            <h3 class="text-primary text-center"><b>
+                    Moduł obsługujący pliki
+                </b></h3>
+            <span class="text-justify">
+                <h4 text="text-scondary">
+                    Moduł ten odpowiada za przesyłanie plików na serwer, ich zapisywanie oraz usuwanie.
+                    W zakładce <a href="{% url 'main:files_list' %}">pliki</a> można zobaczyć aktulanie dostępne pliki,
+                    pobrać oraz usunąć plik.
+                    Drugą zakładką jest strona <a href="{% url 'main:upload_file' %}">przesyłania plików</a> gdzie można
+                    dodać plik
+                    wprowadzając takie parametry jak:
+                    <ul>
+                        <li>Nazwa pliku - widoczna na serwerze</li>
+                        <li>Opis pliku - dodatkowy opis pliku służący do dodania komentarza do pliku</li>
+                        <li>Plik - wybrany plik z dysku</li>
+                        <li>Tag - tag określający czy plik przesyłany jest w ramach przedmiotu ZSZI lub ISP</li>
+                    </ul>
+                </h4>
+            </span>
+        </span>
+
+        <br>
+        <span>
+            <h3 class="text-primary text-center"><b>
+                    Moduł obsługujący paramtery
+                </b></h3>
+            <span class="text-justify">
+                <h4>
+                    Moduł ten odpowiada za wprowadzanie parametrów testu na serwer, ich zapisywanie, przeglądanie
+                    oraz usuwanie. W zakładce <a href="{% url 'main:parameters_list' %}">parametery</a> można
+                    zobaczyć aktulanie dostępne parametry w bazie danych, przejść do wypisania wartości lub
+                    usunąć parametry z bazy danych. Drugą zakładką jest formularz <a href="{% url 'main:parameters' %}">
+                        dodawania parametrów</a> do bazy danych. Formularz pozwala na wprowadzenie danych (pogrubione są wymagane zawsze):
+                    <ul>
+                        <li>Nazwa modelu - widoczna na serwerze nazwa modelu parametrów</li>
+                        <li>Opis modelu - dodatkowy opis modelu służący do dodania informacji o nim</li>
+                        <li>Plik - wybrany plik z dostępnych na serwerze z tagiem ZSZI</li>
+                        <ul class="text-info">
+                            <span class="text-primary">Kolumny (nagłówki pliku csv) powinny posiadać poniższe nazwy,
+                                dobrze aby została zachowana ewentualna kolejność. Konieczne wartości:</span>
+                            <li>t - kolumna czasu [s]</li>
+                            <li>T_in - temperatura na wlocie do wymiennnika [&#176;C]</li>
+                            <li>T_out - temperatura na wylocie z wymiennnika [&#176;C]</li>
+                            <span class="text-primary">Wartości dodatkowe, posłużą do obliczeń,
+                                jeśli któraś nie zostanie podana to zostaną obliczone z innych dostępnych danych.</span>
+                            <li>Q_v - przepływ czynnika przez wymiennik [m<sup>3</sup>/s]</li>
+                            <li>v - prędkość przepływu [m/s]</li>
+                            <li>Q - moc cieplna [W]</li>
+                        </ul>
+                        <li>Parametry testu - parametry testu w postaci wartości średnich:</li>
+                        <ul class="text-info">
+                            <li>qv - średni przepływ przez wymiennik [m<sup>3</sup>/s]</li>
+                            <li>q - średnia moc cieplna [W]</li>
+                            <li>v - średnia prędkość przepływu przez wymiennik [m/s]</li>
+                        </ul>
+                        <li>Parametry medium - parametry cieczy użytej w teście:</li>
+                        <ul class="text-info">
+                            <li>cp_m - ciepło właściwe cieczy [J/(kg&#183;K)]</li>
+                            <li>ro_m - gęstość cieczy [kg/m<sup>3</sup>]</li>
+                            <li>mi_m - współczynnik lepkości dynamicznej [Pa&#183;s]</li>
+                            <li>lam_m - współczynnik przewodzenia płynu [W/(m&#183;K)]</li>
+                        </ul>
+                        <li>Parametry górotworu (wartości średnie):</li>
+                        <ul class="text-info">
+                            <li>cp - ciepło właściwe cieczy [J/(kg&#183;K)]</li>
+                            <li>ro - gęstość górotworu [kg/m<sup>3</sup>]</li>
+                            <li>alfa - &#945; - dyfyzyjność [m<sup>2</sup>/s]</li>
+                            <li>T_g - niezakłócona temperatura gruntu [&#176;C]</li>
+                        </ul>
+                        <li>Parametry wymiennika:</li>
+                        <ul class="text-info">
+                            <li>H - głębkość wymiennika [m]</li>
+                            <li>D_b - średnica otworu pod wymiennik [m]</li>
+                            <li>d_out - średnica zewnętrzna rury [m]</li>
+                            <li>d_inn - średnica wewnętrzna rury [m]</li>
+                            <li>r_g - grubość ścianki rury [m]</li>
+                        </ul>
+                        <span class="text-primary">Parametry rury odnoszą się do rury przez którą
+                            przeływa czynnik. Slużą one do ewentualnego wyznaczenia przepływu z
+                            prędkości i wymiarów geometrycznych.</span>
+                    </ul>
+                </h4>
+            </span>
+        </span>
+        <br>
+        <span>
+            <h3 class="text-primary text-center"><b>
+                    Moduł obliczeń
+                </b></h3>
+            <span class="text-justify">
+            </span>
         </span>
     </div>
 

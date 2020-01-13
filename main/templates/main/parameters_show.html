@@ -32,7 +32,7 @@
   <div class="row border border-info rounded-pill" id="test_param">
     <div class="col">
       <div class="form-group">
-        <label class="col-form-label text-muted" for="id_qv">Średni przepływ [m^3/s]</label>
+        <label class="col-form-label text-muted" for="id_qv">Średni przepływ [m<sup>3</sup>/s]</label>
         <div class="container" id="id_qv">
           <h4>{{ model.qv }}</h4>
         </div>
@@ -65,13 +65,13 @@
 
     <div class="col">
       <div class="form-group" style=>
-        <label class="col-form-label text-muted" for="id_cp_m">Ciepło właściwe [J/(kgK)]</label>
+        <label class="col-form-label text-muted" for="id_cp_m">Ciepło właściwe [J/(kg&#183;K)]<</label>
         <div class="container" id="id_cp_m">
           <h4>{{ model.cp_m }}</h4>
         </div>
       </div>
       <div class="form-group">
-        <label class="col-form-label text-muted" for="ro_m">Gęstość medium [kg/m^3]</label>
+        <label class="col-form-label text-muted" for="ro_m">Gęstość medium [kg/m<sup>3</sup>]</label>
         <div class="container" id="id_ro_m">
           <h4>{{ model.ro_m }}</h4>
         </div>
@@ -80,13 +80,13 @@
 
     <div class="col">
       <div class="form-group">
-        <label class="col-form-label text-muted" for="id_mi_m">Współczynnik lepkości dynaminczej [x]</label>
+        <label class="col-form-label text-muted" for="id_mi_m">Współczynnik lepkości dynaminczej [Pa&#183;s]</label>
         <div class="container" id="id_mi_m">
           <h4>{{ model.mi_m }}</h4>
         </div>
       </div>
       <div class="form-group">
-        <label class="col-form-label text-muted" for="id_lam_m">Współczynnik przewodzenia ciepła [x]</label>
+        <label class="col-form-label text-muted" for="id_lam_m">Współczynnik przewodzenia ciepła [W/(m&#183;K)]</label>
         <div class="container" id="id_lam_m">
           <h4>{{ model.lam_m }}</h4>
         </div>
@@ -102,15 +102,15 @@
   <div class="row border border-info rounded-pill" id="rocks">
     <div class="col">
       <div class="form-group">
-        <label class="col-form-label text-muted" for="id_cp">Ciepło właściwe [J/(kgK)]</label>
+        <label class="col-form-label text-muted" for="id_cp">Ciepło właściwe [J/(kg&#183;K)]</label>
         <div class="container" id="id_cp">
           <h4>{{ model.cp }}</h4>
         </div>
       </div>
-    </div>
-    <div class="col">
+    <!-- </div>
+    <div class="col"> -->
       <div class="form-group">
-        <label class="col-form-label text-muted" for="id_ro">Gęstość [kg/m^3]</label>
+        <label class="col-form-label text-muted" for="id_ro">Gęstość [kg/m<sup>3</sup>]</label>
         <div class="container" id="id_ro">
           <h4>{{ model.ro }}</h4>
         </div>
@@ -118,9 +118,15 @@
     </div>
     <div class="col">
       <div class="form-group">
-        <label class="col-form-label text-muted" for="id_alfa">Dyfuzyjność [x]</label>
+        <label class="col-form-label text-muted" for="id_alfa">Dyfuzyjność [m<sup>2</sup>/s]</label>
         <div class="container" id="id_alfa">
           <h4>{{ model.alfa }}</h4>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-form-label text-muted" for="id_T_g">Temperatura niezakłócona [&#176;C]</label>
+        <div class="container" id="id_T_g">
+          <h4>{{ model.T_g }}</h4>
         </div>
       </div>
     </div>

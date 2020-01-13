@@ -7,20 +7,24 @@
   <div class="form-group">
     <label class="col-form-label" for="id_model_name">Nazwa modelu</label>
     <input type="text" class="form-control" name='model_name' maxlength="250" placeholder="Nazwa modelu"
-      id="id_model_name">
+      id="id_model_name" value="{{form.model_name.value}}">
   </div>
 
   <div class="form-group">
     <label class="col-form-label" for="id_model_desc">Opis modelu</label>
     <input type="text" class="form-control" name='model_desc' maxlength="2000" placeholder="Opis modelu"
-      id="id_model_desc">
+      id="id_model_desc" value="{{form.model_desc.value}}">
   </div>
 
   <div class="form-group">
     <label for="id_chosen_file">Wybierz plik</label>
     <select class="form-control" id="id_chosen_file" name='chosen_file'>
       {% for file in files %}
+      {% if form.chosen_file.value == file.file_name %}
+      <option selected="selected"> {{ file.file_name }} </option>
+      {% else %}
       <option> {{ file.file_name }} </option>
+      {% endif %}
       {% endfor %}
     </select>
   </div>
@@ -32,19 +36,19 @@
     <div class="col">
       <div class="form-group">
         <label class="col-form-label" for="id_qv">Średni przepływ [m<sup>3</sup>/s]</label>
-        <input type="text" class="form-control" name='qv' placeholder="qv" id="id_qv">
+        <input type="text" class="form-control" name='qv' value="{{form.qv.value}}" id="id_qv">
       </div>
     </div>
     <div class="col">
       <div class="form-group">
         <label class="col-form-label" for="id_q">Średnia moc cieplna [W]</label>
-        <input type="text" class="form-control" name='q' placeholder="q" id="id_q">
+        <input type="text" class="form-control" name='q' value="{{form.q.value}}" id="id_q">
       </div>
     </div>
     <div class="col">
       <div class="form-group">
         <label class="col-form-label" for="id_v">Średnia prędkość przepływu [m/s]</label>
-        <input type="text" class="form-control" name='v' placeholder="v" id="id_v">
+        <input type="text" class="form-control" name='v' value="{{form.v.value}}" id="id_v">
       </div>
     </div>
   </div>
@@ -58,22 +62,22 @@
     <div class="col">
       <div class="form-group" style=>
         <label class="col-form-label" for="id_cp_m">Ciepło właściwe [J/(kg&#183;K)]</label>
-        <input type="text" class="form-control" name="cp_m" placeholder="cp_m" id="id_cp_m">
+        <input type="text" class="form-control" name="cp_m" value="{{form.cp_m.value}}" id="id_cp_m">
       </div>
       <div class="form-group">
         <label class="col-form-label" for="ro_m">Gęstość medium [kg/m<sup>3</sup>]</label>
-        <input type="text" class="form-control" name="ro_m" placeholder="ro_m" id="id_ro_m">
+        <input type="text" class="form-control" name="ro_m" value="{{form.ro_m.value}}" id="id_ro_m">
       </div>
     </div>
 
     <div class="col">
       <div class="form-group">
         <label class="col-form-label" for="id_mi_m">Współczynnik lepkości dynaminczej [Pa&#183;s]</label>
-        <input type="text" class="form-control" name="mi_m" placeholder="mi_m" id="id_mi_m">
+        <input type="text" class="form-control" name="mi_m" value="{{form.mi_m.value}}" id="id_mi_m">
       </div>
       <div class="form-group">
         <label class="col-form-label" for="id_lam_m">Współczynnik przewodzenia ciepła [W/(m&#183;K)]</label>
-        <input type="text" class="form-control" name="lam_m" placeholder="lam_m" id="id_lam_m">
+        <input type="text" class="form-control" name="lam_m" value="{{form.lam_m.value}}" id="id_lam_m">
       </div>
     </div>
   </div>
@@ -85,23 +89,23 @@
     <div class="col">
       <div class="form-group">
         <label class="col-form-label" for="id_cp">Ciepło właściwe [J/(kg&#183;K)]</label>
-        <input type="text" class="form-control" name='cp' placeholder="cp" id="id_cp">
+        <input type="text" class="form-control" name='cp' value="{{form.cp.value}}" id="id_cp">
       </div>
-    <!-- </div>
+      <!-- </div>
     <div class="col"> -->
       <div class="form-group">
         <label class="col-form-label" for="id_ro">Gęstość [kg/m<sup>3</sup>]</label>
-        <input type="text" class="form-control" name='ro' placeholder="ro" id="id_ro">
+        <input type="text" class="form-control" name='ro' value="{{form.ro.value}}" id="id_ro">
       </div>
     </div>
     <div class="col">
       <div class="form-group">
         <label class="col-form-label" for="id_alfa">Dyfuzyjność [m<sup>2</sup>/s]</label>
-        <input type="text" class="form-control" name='alfa' placeholder="&#945" id="id_alfa">
+        <input type="text" class="form-control" name='alfa' value="{{form.alfa.value}}" id="id_alfa">
       </div>
       <div class="form-group">
         <label class="col-form-label" for="id_T_g">Temperatura niezakłócona [&#176;C]</label>
-        <input type="text" class="form-control" name='T_g' placeholder="T_g" id="id_T_g">
+        <input type="text" class="form-control" name='T_g' value="{{form.T_g.value}}" id="id_T_g">
       </div>
     </div>
   </div>
@@ -113,13 +117,13 @@
     <div class="col">
       <div class="form-group">
         <label class="col-form-label" for="id_H">Głębkość wymiennika [m]</label>
-        <input type="text" class="form-control" name='H' placeholder="H" id="id_H">
+        <input type="text" class="form-control" name='H' value="{{form.H.value}}" id="id_H">
       </div>
     </div>
     <div class="col">
       <div class="form-group">
         <label class="col-form-label" for="id_D_b">Średnica otworu [m]</label>
-        <input type="text" class="form-control" name='D_b' placeholder="D_b" id="id_D_b">
+        <input type="text" class="form-control" name='D_b' value="{{form.D_b.value}}" id="id_D_b">
       </div>
     </div>
   </div>
@@ -128,19 +132,19 @@
     <div class="col">
       <div class="form-group">
         <label class="col-form-label" for="id_d_out">Średnica zewnętrzna rury [m]</label>
-        <input type="text" class="form-control" name='d_out' placeholder="d_out" id="id_d_out">
+        <input type="text" class="form-control" name='d_out' value="{{form.d_out.value}}" id="id_d_out">
       </div>
     </div>
     <div class="col">
       <div class="form-group">
         <label class="col-form-label" for="id_d_inn">Średnica wewnętrzna rury [m]</label>
-        <input type="text" class="form-control" name='d_inn' placeholder="d_inn" id="id_d_inn">
+        <input type="text" class="form-control" name='d_inn' value="{{form.d_inn.value}}" id="id_d_inn">
       </div>
     </div>
     <div class="col">
       <div class="form-group">
         <label class="col-form-label" for="id_r_g">Grubość ścianki rury [m]</label>
-        <input type="text" class="form-control" name='r_g' placeholder="r_g" id="id_r_g">
+        <input type="text" class="form-control" name='r_g' value="{{form.r_g.value}}" id="id_r_g">
       </div>
     </div>
   </div>
@@ -148,6 +152,7 @@
 
   <button type="submit" class="btn btn-primary" data-toggle="tooltip" data-placement="top"
     title="Zapisz parametry">Zapisz</button>
+  <input name="pk_param" value="{{pk_param}}" style="display: none;"></input>
   {{ form.errors }}
   {{ form.non_field_errors }}
 </form>

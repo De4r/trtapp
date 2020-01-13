@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, reverse
+from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.http import HttpResponse
 from .models import UploadedFile, ParametersModel
 from .forms import UploadedFileForm, ParametersModelForm
@@ -8,7 +8,8 @@ import plotly.graph_objs as go
 import pandas as pd
 import os
 from django.conf import settings
-from .mFuncs import plotIsp
+from .ispFuncs import plotIsp
+from .trtFuncs import Trt
 # Create your views here.
 
 
@@ -27,9 +28,9 @@ def isp_view(request):
         f = uploaded_files[0]
         plot_div = plotIsp(f)
     return render(request, 'main/isp.html',
-                      context={'files': uploaded_files,
-                               'plot_div': plot_div,
-                               'file': f})
+                  context={'files': uploaded_files,
+                           'plot_div': plot_div,
+                           'file': f})
 
 
 def trt(request):
@@ -44,16 +45,24 @@ def files_list_view(request):
 
 
 def solver_view(request):
-    x_data = [0, 1, 2, 3]
-    y_data = [x**2 for x in x_data]
-
-    plot_div = plot([go.Scatter(x=x_data, y=y_data,
-                                mode='lines', name='test',
-                                opacity=0.8, marker_color='green')],
-                    output_type='div', include_plotlyjs=False)
-
+    parameters_models = ParametersModel.objects.all().order_by('-created_date')
+    if request.method == 'POST':
+        chosen_model = request.POST.get('chosen_model')
+        p_model = ParametersModel.objects.get(model_name=chosen_model)
+        print(p_model)
+        trt = Trt(p_model)
+        plot_div = trt.plot_raw_data()
+        return render(request, 'main/solver.html',
+                  context={'plot_div': plot_div,
+                  'models': parameters_models,
+                  'chosen_model': chosen_model,
+                  })
+    else:
+        plot_div = None
     return render(request, 'main/solver.html',
-                  context={'plot_div': plot_div})
+                  context={'plot_div': plot_div,
+                  'models': parameters_models})
+
 
 def parameters_list_view(request):
     parameters_models = ParametersModel.objects.all().order_by('-created_date')
@@ -65,8 +74,8 @@ def parameters_show_view(request, pk=1):
     parameter_model = ParametersModel.objects.get(pk=pk)
 
     return render(request, 'main/parameters_show.html', {
-            'model': parameter_model,
-        })
+        'model': parameter_model,
+    })
 
 
 def parameters_view(request):
@@ -75,13 +84,52 @@ def parameters_view(request):
         if form.is_valid():
             form.save()
             return redirect('main:parameters_list')
+        else:
+            print(form.errors)
+
     else:
-        form = ParametersModelForm() 
+        form = ParametersModelForm()
     uploaded_files = UploadedFile.objects.all().order_by('-upload_date')
 
     return render(request, 'main/parameters.html',
                   context={'files': uploaded_files,
-                  'form': form, })
+                           'form': form, })
+
+
+def parameters_edit_view(request, pk_param=None):
+    # contet_instance = RequestConext(request)
+
+    if request.method == 'POST':
+        instance = None
+        try:
+            pk_param = request.POST['pk_param']
+            instance = ParametersModel.objects.get(pk=pk_param)
+        except:
+            pass
+
+        if instance is None:
+            return redirect('main:parameters')
+        else:
+            form = ParametersModelForm(request.POST, instance=instance)
+            if form.is_valid():
+                form.save()
+                return redirect('main:parameters_list')
+            else:
+                print(form.errors)
+    else:
+        try:
+            instance = ParametersModel.objects.get(pk=pk_param)
+            print(instance)
+        except:
+            pass
+        form = ParametersModelForm(instance=instance)
+
+    uploaded_files = UploadedFile.objects.all().order_by('-upload_date')
+
+    return render(request, 'main/parameters_edit.html',
+                  context={'files': uploaded_files,
+                           'form': form,
+                           'pk_param': pk_param, })
 
 
 def upload_file(request):

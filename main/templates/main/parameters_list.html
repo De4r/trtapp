@@ -8,6 +8,7 @@
     <tr class="table">
       <th>Nazwa</th>
       <th>Data</th>
+      <th>Edytuj</th>
       <th>Pokaż</th>
       <th>Usuń</th>
     </tr>
@@ -17,6 +18,14 @@
     <tr class="table">
       <td>{{ model.model_name }}</td>
       <td> {{ model.created_date }}</td>
+      <td>
+        <a href="{% url 'main:parameters_edit' model.pk %}">
+          <!-- {% csrf_token %} -->
+          <!-- <input name="pk_param" value="{{model.pk}}" style="display: none;"></input> -->
+          <button class="btn btn-primary bt-sm" data-toggle="tooltip" data-placement="top"
+            title="Edytuj wartości modelu">Edytuj</a>
+        </a>
+      </td>
       <td>
         <form action="{% url 'main:parameters_show' model.pk %}" method="post">
           {% csrf_token %}

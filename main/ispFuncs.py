@@ -1,7 +1,3 @@
-from django.shortcuts import render, redirect, reverse
-from django.http import HttpResponse
-from .models import UploadedFile
-from .forms import UploadedFileForm
 from plotly.offline import plot
 # from plotly.subplots import make_subplots
 import plotly.graph_objs as go

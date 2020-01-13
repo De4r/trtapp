@@ -27,6 +27,8 @@ urlpatterns = [
     path('trt/delete_file<int:pk_file>', views.delete_file, name='delete_file'),
     path('trt/solver', views.solver_view, name='solver'),
     path('trt/parameters', views.parameters_view, name='parameters'),
+    path('trt/parameters_edit<int:pk_param>',
+         views.parameters_edit_view, name='parameters_edit'),
     path('trt/parameters_list', views.parameters_list_view, name='parameters_list'),
     path('trt/parameters_show<int:pk>',
          views.parameters_show_view, name='parameters_show'),

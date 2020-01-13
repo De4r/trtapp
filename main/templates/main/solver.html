@@ -5,21 +5,37 @@
     <h2 class="text-center">Obliczenia</h2>
 
     <br>
-    <p>
-        <h3 class="text-center">W trakcie budowy ...</h3>
-    </p>
-    <div class="progress">
-        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="20"
-            aria-valuemin="0" aria-valuemax="100" style="width: 20%"></div>
+    <form action="" class="row" method='POST'>
+        {% csrf_token %}
+        <div class="col-8">
+            <select class="form-control" id="id_chosen_model" name='chosen_model'>
+                {% for model in models %}
+                    {% if chosen_model == model.model_name %}
+                        <option selected="selected"> {{ model.model_name }} </option>
+                    {% else %}
+                        <option> {{ model.model_name }} </option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-4">
+            <button type="submit" class="btn btn-primary" data-toggle="tooltip" data-placement="top"
+                title="Pokaż dane">Pokaż wykres</button>
+            <input name="pk_param" value="{{pk_param}}" style="display: none;"></input>
+        </div>
+    </form>
+    <br>
+    <h2 class="text-center">Dane pomiarowe</h2>
+    <div>
+        {% if plot_div is not None %}
+        {% for plot in plot_div %}
+        {% autoescape off %}
+        {{ plot }}
+        {% endautoescape %}
+        {% endfor %}
+        {% endif %}
     </div>
 
-    <br>
-    <h2>Przykładowy wykres</h2>
-    <div>
-        {% autoescape off %}
-        {{ plot_div }}
-        {% endautoescape %}
-    </div>
 
 
 

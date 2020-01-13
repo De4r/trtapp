@@ -14,4 +14,4 @@ class ParametersModelForm(forms.ModelForm):
         model = ParametersModel
         fields = ('model_name', 'model_desc', 'chosen_file',
                  'qv', 'q', 'v', 'cp_m', 'ro_m', 'mi_m', 'lam_m',
-                 'cp', 'ro', 'alfa', 'H', 'D_b', 'd_out', 'd_inn', 'r_g')
+                 'cp', 'ro', 'alfa', 'T_g', 'H', 'D_b', 'd_out', 'd_inn', 'r_g')

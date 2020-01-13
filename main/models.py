@@ -25,24 +25,25 @@ class ParametersModel(models.Model):
     model_desc = models.TextField(max_length=2000, default='')
     chosen_file = models.CharField(max_length=100)
     # Test parameters
-    qv = models.FloatField()
-    q = models.FloatField()
-    v = models.FloatField()
+    qv = models.FloatField(blank=True, null=True)
+    q = models.FloatField(blank=True, null=True)
+    v = models.FloatField(blank=True, null=True)
     # Medium properties
     cp_m = models.FloatField()
     ro_m = models.FloatField()
-    mi_m = models.FloatField()
-    lam_m = models.FloatField()
+    mi_m = models.FloatField(blank=True, null=True)
+    lam_m = models.FloatField(blank=True, null=True)
     # Rock properties
     cp = models.FloatField()
     ro = models.FloatField()
-    alfa = models.FloatField()
+    alfa = models.FloatField(blank=True, null=True)
+    T_g = models.FloatField(blank=True, null=True)
     # BHE properties
     H = models.FloatField()
     D_b = models.FloatField()
-    d_out = models.FloatField()
-    d_inn = models.FloatField()
-    r_g = models.FloatField()
+    d_out = models.FloatField(blank=True, null=True)
+    d_inn = models.FloatField(blank=True, null=True)
+    r_g = models.FloatField(blank=True, null=True)
 
     created_date = models.DateTimeField(
         auto_now_add=True)

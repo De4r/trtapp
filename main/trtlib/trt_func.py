@@ -42,7 +42,7 @@ globTitles = ['Wykres temperatur z testu reakcji termicznej',
               'Wykres temperature z TRT <br> po usrednieniu oknem: ',
               'Przebieg mocy cieplnej', 'Przebieg przepłwu',
               'Modele regresji liniowej']
-globyLables = ['Temperatura [°C]', 'Przeplyw [m^3/s]', 'Moc [W]']
+globyLables = ['Temperatura [°C]', 'Przeplyw [m<sup>3</sup>/s]', 'Moc [W]']
 globxLabels = ['Czas [s]', 'Czas ln(t) [s]']
 globLineStyles = ['lines', 'markers', 'lines+markers']
 gamma = 0.5772
