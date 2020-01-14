@@ -13,6 +13,7 @@ from .trtFuncs import Trt
 # Create your views here.
 
 
+
 def homepage(request):
     return render(request, 'main/home.html')
 
@@ -30,7 +31,8 @@ def isp_view(request):
     return render(request, 'main/isp.html',
                   context={'files': uploaded_files,
                            'plot_div': plot_div,
-                           'file': f})
+                           'file': f,
+                           'plot_shown': True,})
 
 
 def trt(request):
@@ -48,14 +50,16 @@ def solver_view(request):
     parameters_models = ParametersModel.objects.all().order_by('-created_date')
     if request.method == 'POST':
         chosen_model = request.POST.get('chosen_model')
+        opts = request.POST.dict()
         p_model = ParametersModel.objects.get(model_name=chosen_model)
-        print(p_model)
-        trt = Trt(p_model)
-        plot_div = trt.plot_raw_data()
+        print(p_model, opts)
+        trt = Trt(p_model, opts)
+        plot_div = trt.handle_plot()
         return render(request, 'main/solver.html',
                   context={'plot_div': plot_div,
                   'models': parameters_models,
-                  'chosen_model': chosen_model,
+                  'opts': opts,
+                  'plot_shown': True,
                   })
     else:
         plot_div = None

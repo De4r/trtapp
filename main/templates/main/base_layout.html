@@ -12,15 +12,20 @@
 
 <body style="background-color: #ffffff; height: 100%; display: flex; flex-direction: column;">
     {% include "main/includes/navbar.html" %}
-    <div class="container" style="flex: 1 0 auto;">
-        <main>
-            <div style="padding: 30px 0;">
-                {% block content %}
+    {% if plot_shown == True %}
+    <div class="container" style="flex: 1 0 auto; max-width: 85%;">
+        {% else %}
+        <div class="container" style="flex: 1 0 auto;">
+            {% endif %}
+            <main>
 
-                {% endblock %}
-            </div>
-        </main>
-    </div>
+                <div style="padding: 30px 0;">
+                    {% block content %}
+
+                    {% endblock %}
+                </div>
+            </main>
+        </div>
     </div>
 
     {% include "main/includes/footer.html" %}

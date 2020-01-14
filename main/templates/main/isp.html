@@ -22,6 +22,7 @@
                             title="Pokaż wykresy">Wybierz</button>
                     </div>
                 </div>
+            </div>
         </form>
 
         <br>
@@ -57,18 +58,19 @@
         {% endfor %}
     </div>
     <br>
-    <p class="text-justify" style="text-size-adjust: 1.2em;">
-        W przypadku zastosowanej korekcji temperatur zastosowano następujące wartości:
-        <ul>
-            <li>Moduł 1 (Arduino Uno):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>-1.715 &#176C </b></li>
-            <li>Moduł 2 (Arduino Nano):&nbsp; <b>-1.325 &#176C </b></li>
-            <li>Moduł 3 (Arduino Nano):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>-1.05 &#176C </b></li>
-        </ul>
-        Wartości te zostały wynzaczone w porówaniu z termometrem rtęciowym oraz cyfrowym.
-        Wartości powyższych termometrów w każdej chwili pomiaru były zgodne.
-        Zazwyczaj za moduł bazowy (adres 00) służył moduł 2.
-    </p>
-
+    <div class="container">
+        <p class="text-justify" style="text-size-adjust: 1.2em;">
+            W przypadku zastosowanej korekcji temperatur zastosowano następujące wartości:
+            <ul>
+                <li>Moduł 1 (Arduino Uno):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>-1.715 &#176C </b></li>
+                <li>Moduł 2 (Arduino Nano):&nbsp; <b>-1.325 &#176C </b></li>
+                <li>Moduł 3 (Arduino Nano):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>-1.05 &#176C </b></li>
+            </ul>
+            Wartości te zostały wynzaczone w porówaniu z termometrem rtęciowym oraz cyfrowym.
+            Wartości powyższych termometrów w każdej chwili pomiaru były zgodne.
+            Zazwyczaj za moduł bazowy (adres 00) służył moduł 2.
+        </p>
+    </div>
 
 </div>
 {% endblock %}

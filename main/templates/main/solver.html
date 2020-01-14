@@ -1,33 +1,125 @@
 {% extends "main/base_layout.html" %}
 
 {% block content %}
-<div class="jumbotron">
-    <h2 class="text-center">Obliczenia</h2>
+<!-- Here starts layout after 1st ask -->
+{% if plot_shown == True %}
+<h2 class="text-center">Obliczenia</h2>
+<br>
+<div class="row" style="border-style: groove; border-radius: 5px; border-width: 5px; border-color: #ecf0f1;">
+    <div class="col-4 bg-light" style="padding: 10px; border-radius: 4px;">
 
-    <br>
-    <form action="" class="row" method='POST'>
-        {% csrf_token %}
-        <div class="col-8">
-            <select class="form-control" id="id_chosen_model" name='chosen_model'>
-                {% for model in models %}
-                    {% if chosen_model == model.model_name %}
+        <form action="" method='POST'>
+            {% csrf_token %}
+            <div class="row align-items-center">
+                <div class="col-6">
+                    <label class="form-label" for="id_chosen_model">Model parametrów</label>
+                    <select class="form-control" id="id_chosen_model" name='chosen_model'>
+                        {% for model in models %}
+                        {% if opts.chosen_model == model.model_name %}
                         <option selected="selected"> {{ model.model_name }} </option>
-                    {% else %}
+                        {% else %}
                         <option> {{ model.model_name }} </option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-6-items-center">
+                    <div class="custom-control custom-switch">
+                        <!--style="position: absolute; bottom: 10px;" -->
+                        {% if  not opts.log_scale == None %}
+                        <input class="custom-control-input" type="checkbox" name="log_scale" value="1" checked=""
+                            id="id_log_scale">
+                        {% else %}
+                        <input class="custom-control-input" type="checkbox" name="log_scale" value="1"
+                            id="id_log_scale">
+                        {% endif %}
+                        <label class="custom-control-label" for="id_log_scale">Skala logarytmiczna</label>
+                    </div>
+                </div>
+
+            </div>
+            <br>
+
+            <div class="row align-items-center">
+                <div class="col-6">
+                    {% if plot_shown == True %}
+                    <div class="form-group">
+                        <label class="form-label">Podaj granice okna czasowego</label>
+                        {% if not opts.t_1 == True %}
+                        <input class="form-control" type="text" name="t_1" value="{{ opts.t_1 }}">
+                        {% else %}
+                        <input class="form-control" type="text" name="t_1" placeholder="Dolna granica">
+                        {% endif %}
+
+                        {% if not opts.t_2 == True %}
+                        <input class="form-control" type="text" name="t_2" value="{{ opts.t_2 }}">
+                        {% else %}
+                        <input class="form-control" type="text" name="t_2" placeholder="Górna granica">
+                        {% endif %}
+                    </div>
                     {% endif %}
-                {% endfor %}
-            </select>
-        </div>
-        <div class="col-4">
-            <button type="submit" class="btn btn-primary" data-toggle="tooltip" data-placement="top"
-                title="Pokaż dane">Pokaż wykres</button>
-            <input name="pk_param" value="{{pk_param}}" style="display: none;"></input>
-        </div>
-    </form>
-    <br>
-    <h2 class="text-center">Dane pomiarowe</h2>
-    <div>
+                </div>
+
+            </div>
+            <div class="row align-items-center">
+                <div class="col-6">
+                    {% if  not opts.mean_mode == None %}
+                    <div class="form-group">
+                        <label class="form-label">Podaj liczbe próbek</label>
+                        {% if not opts.win_len == True %}
+                        <input class="form-control" type="text" name="win_len" value="{{ opts.win_len }}"
+                            data-toggle="tooltip" data-placement="top" title="Domyślna liczba próbek: 5">
+                        {% else %}
+                        <input class="form-control" type="text" name="win_len" placeholder="Liczba próbek"
+                            data-toggle="tooltip" data-placement="top" title="Domyślna liczba próbek: 5">
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <div class="custom-control custom-switch">
+                            {% if  not opts.win_pos == None %}
+                            <input class="custom-control-input" type="checkbox" name="win_pos" value="1" checked=""
+                                id="id_win_pos">
+                            {% else %}
+                            <input class="custom-control-input" type="checkbox" name="win_pos" value="1"
+                                id="id_win_pos">
+                            {% endif %}
+                            <label class="custom-control-label" for="id_win_pos">Uśrednianie do środka okna
+                                ruchomego</label>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="col-6">
+                    <div class="custom-control custom-switch">
+                        {% if  not opts.mean_mode == None %}
+                        <input class="custom-control-input" type="checkbox" name="mean_mode" value="1" checked=""
+                            id="id_mean_mode">
+                        {% else %}
+                        <input class="custom-control-input" type="checkbox" name="mean_mode" value="1"
+                            id="id_mean_mode">
+                        {% endif %}
+                        <label class="custom-control-label" for="id_mean_mode">Średnia ruchoma</label>
+                    </div>
+                </div>
+            </div>
+
+            <br>
+            <div class="row align-items-end">
+                <div class="col-6"></div>
+                <div class="col-6">
+                    <button type="submit" class="btn btn-primary" data-toggle="tooltip" data-placement="top"
+                        title="Pokaż dane" style="position: absolute; right: 25px;">Pokaż
+                        wykres</button>
+                </div>
+            </div>
+
+            <input name="plot_shown" value="{{ plot_shown }}" style="display: none;"></input>
+        </form>
+    </div>
+    <div class="col-8">
         {% if plot_div is not None %}
+        <!-- <h2 class="text-center">Dane pomiarowe</h2> -->
         {% for plot in plot_div %}
         {% autoescape off %}
         {{ plot }}
@@ -35,9 +127,116 @@
         {% endfor %}
         {% endif %}
     </div>
+</div>
+
+
+<!-- Here starts 1st layout -->
+{% else %}
+<div class="jumbotron">
+    <h2 class="text-center">Obliczenia</h2>
+    <br>
+    <form action="" method='POST'>
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-8">
+                <label class="form-label" for="id_chosen_model">Model parametrów</label>
+                <select class="form-control" id="id_chosen_model" name='chosen_model'>
+                    {% for model in models %}
+                    {% if opts.chosen_model == model.model_name %}
+                    <option selected="selected"> {{ model.model_name }} </option>
+                    {% else %}
+                    <option> {{ model.model_name }} </option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-4">
+                <div class="custom-control custom-switch" style="position: absolute; bottom: 10px;">
+                    {% if  not opts.log_scale == None %}
+                    <input class="custom-control-input" type="checkbox" name="log_scale" value="1" checked=""
+                        id="id_log_scale">
+                    {% else %}
+                    <input class="custom-control-input" type="checkbox" name="log_scale" value="1" id="id_log_scale">
+                    {% endif %}
+                    <label class="custom-control-label" for="id_log_scale">Skala logarytmiczna</label>
+                </div>
+            </div>
+
+        </div>
+        <br>
+
+        <div class="row">
+            <div class="col-4">
+                {% if plot_shown == True %}
+                <div class="form-group">
+                    <label class="form-label">Podaj granice okna czasowego</label>
+                    {% if not opts.t_1 == True %}
+                    <input class="form-control" type="text" name="t_1" value="{{ opts.t_1 }}">
+                    {% else %}
+                    <input class="form-control" type="text" name="t_1" placeholder="Dolna granica">
+                    {% endif %}
+
+                    {% if not opts.t_2 == True %}
+                    <input class="form-control" type="text" name="t_2" value="{{ opts.t_2 }}">
+                    {% else %}
+                    <input class="form-control" type="text" name="t_2" placeholder="Górna granica">
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="col-4">
+                {% if  not opts.mean_mode == None %}
+                <div class="form-group">
+                    <label class="form-label">Podaj liczbe próbek</label>
+                    {% if not opts.win_len == True %}
+                    <input class="form-control" type="text" name="win_len" value="{{ opts.win_len }}">
+                    {% else %}
+                    <input class="form-control" type="text" name="win_len" placeholder="Liczba próbek">
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <div class="custom-control custom-switch">
+                        {% if  not opts.win_pos == None %}
+                        <input class="custom-control-input" type="checkbox" name="win_pos" value="1" checked=""
+                            id="id_win_pos">
+                        {% else %}
+                        <input class="custom-control-input" type="checkbox" name="win_pos" value="1" id="id_win_pos">
+                        {% endif %}
+                        <label class="custom-control-label" for="id_win_pos">Uśrednianie do środka okna
+                            ruchomego</label>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
 
 
 
+            <div class="col-4">
+                <div class="custom-control custom-switch">
+                    {% if  not opts.mean_mode == None %}
+                    <input class="custom-control-input" type="checkbox" name="mean_mode" value="1" checked=""
+                        id="id_mean_mode">
+                    {% else %}
+                    <input class="custom-control-input" type="checkbox" name="mean_mode" value="1" id="id_mean_mode">
+                    {% endif %}
+                    <label class="custom-control-label" for="id_mean_mode">Średnia ruchoma</label>
+                </div>
+            </div>
+        </div>
+
+        <br>
+        <div class="row">
+            <div class="col-4">
+                <button type="submit" class="btn btn-primary" data-toggle="tooltip" data-placement="top"
+                    title="Pokaż dane">Pokaż
+                    wykres</button>
+                <input name="plot_shown" value="{{ plot_shown }}" style="display: none;"></input>
+            </div>
+        </div>
+
+    </form>
+    {% endif %}
 
 </div>
 {% endblock %}
