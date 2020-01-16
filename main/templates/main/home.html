@@ -74,6 +74,13 @@
                             <li>qv - średni przepływ przez wymiennik [m<sup>3</sup>/s]</li>
                             <li>q - średnia moc cieplna [W]</li>
                             <li>v - średnia prędkość przepływu przez wymiennik [m/s]</li>
+                            <span class="text-primary">W przypadku pól które można wprowadzić na różne sposoby
+                                priorytet mają dane w pliku. Na przykład kolumna 'v' w pliku jest ważniejsza niż 
+                                wartość średnia v. Z kolei kolumna 'Q_v' jest ważniejsza niż wprowadzone qv. Jesli
+                                wprowadzimy kolumne v i jakiś parametr rury to 'Q_v' zostanie wyliczone z średnicy i 
+                                prędkości, ostatecznie jeśli nie będzie się dało wyliczyć 'Q_v' zostanie pobrana z 
+                                pola qv jako wartość średnia.
+                            </span>
                         </ul>
                         <li>Parametry medium - parametry cieczy użytej w teście:</li>
                         <ul class="text-info">

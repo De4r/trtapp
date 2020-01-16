@@ -35,6 +35,16 @@
                         {% endif %}
                         <label class="custom-control-label" for="id_log_scale">Skala logarytmiczna</label>
                     </div>
+                    <div class="custom-control custom-switch">
+                        <!--style="position: absolute; bottom: 10px;" -->
+                        {% if  not opts.show_tf == None %}
+                        <input class="custom-control-input" type="checkbox" name="show_tf" value="1" checked=""
+                            id="id_show_tf">
+                        {% else %}
+                        <input class="custom-control-input" type="checkbox" name="show_tf" value="1" id="id_show_tf">
+                        {% endif %}
+                        <label class="custom-control-label" for="id_show_tf">Wykres funkcji TRT</label>
+                    </div>
                 </div>
 
             </div>
@@ -104,16 +114,44 @@
                 </div>
             </div>
 
+            <div class="row align-items-center">
+                <div class="col-6">
+
+                </div>
+                <div class="col-6">
+                    <div class="custom-control custom-switch">
+                        {% if  not opts.fit_lin == None %}
+                        <input class="custom-control-input" type="checkbox" name="fit_lin" value="1" checked=""
+                            id="id_fit_lin">
+                        {% else %}
+                        <input class="custom-control-input" type="checkbox" name="fit_lin" value="1"
+                            id="id_fit_lin">
+                        {% endif %}
+                        <label class="custom-control-label" for="id_fit_lin">Dopasuj model liniowy</label>
+                    </div>
+                </div>
+            </div>
+
             <br>
             <div class="row align-items-end">
                 <div class="col-6"></div>
                 <div class="col-6">
-                    <button type="submit" class="btn btn-primary" data-toggle="tooltip" data-placement="top"
-                        title="Pokaż dane" style="position: absolute; right: 25px;">Pokaż
+                    <button type="submit" class="btn btn-primary btn-block" data-toggle="tooltip" data-placement="top"
+                        title="Pokaż dane" >Pokaż
                         wykres</button>
                 </div>
             </div>
-
+            <br>
+            {% if params is not None %}
+            <div class="row align-items-center">
+                <div class="col-6">
+                    {% for key, value in params.items %}
+                        <p>{{key}}: {{ value|floatformat:2}}</p>
+                    {% endfor %}
+                </div>
+                
+            </div>
+            {% endif %}
             <input name="plot_shown" value="{{ plot_shown }}" style="display: none;"></input>
         </form>
     </div>
@@ -160,6 +198,7 @@
                     {% endif %}
                     <label class="custom-control-label" for="id_log_scale">Skala logarytmiczna</label>
                 </div>
+
             </div>
 
         </div>
@@ -167,60 +206,44 @@
 
         <div class="row">
             <div class="col-4">
-                {% if plot_shown == True %}
-                <div class="form-group">
+                <!-- <div class="form-group" >
                     <label class="form-label">Podaj granice okna czasowego</label>
-                    {% if not opts.t_1 == True %}
-                    <input class="form-control" type="text" name="t_1" value="{{ opts.t_1 }}">
-                    {% else %}
                     <input class="form-control" type="text" name="t_1" placeholder="Dolna granica">
-                    {% endif %}
-
-                    {% if not opts.t_2 == True %}
-                    <input class="form-control" type="text" name="t_2" value="{{ opts.t_2 }}">
-                    {% else %}
                     <input class="form-control" type="text" name="t_2" placeholder="Górna granica">
-                    {% endif %}
-                </div>
-                {% endif %}
+                </div> -->
             </div>
 
             <div class="col-4">
-                {% if  not opts.mean_mode == None %}
-                <div class="form-group">
-                    <label class="form-label">Podaj liczbe próbek</label>
-                    {% if not opts.win_len == True %}
-                    <input class="form-control" type="text" name="win_len" value="{{ opts.win_len }}">
-                    {% else %}
-                    <input class="form-control" type="text" name="win_len" placeholder="Liczba próbek">
-                    {% endif %}
-                </div>
-                <div class="form-group">
-                    <div class="custom-control custom-switch">
-                        {% if  not opts.win_pos == None %}
-                        <input class="custom-control-input" type="checkbox" name="win_pos" value="1" checked=""
-                            id="id_win_pos">
-                        {% else %}
-                        <input class="custom-control-input" type="checkbox" name="win_pos" value="1" id="id_win_pos">
-                        {% endif %}
-                        <label class="custom-control-label" for="id_win_pos">Uśrednianie do środka okna
-                            ruchomego</label>
+                <div id="mean_context" class="collapse">
+                    <div class="form-group">
+                        <label class="form-label">Podaj liczbe próbek</label>
+                        <input class="form-control" type="text" name="win_len" placeholder="Liczba próbek">
+                    </div>
+
+                    <div class="form-group">
+                        <div class="custom-control custom-switch">
+                            <input class="custom-control-input" type="checkbox" name="win_pos" value="1"
+                                id="id_win_pos">
+                            <label class="custom-control-label" for="id_win_pos">Uśrednianie do środka okna
+                                ruchomego</label>
+                        </div>
                     </div>
                 </div>
-                {% endif %}
             </div>
 
 
 
             <div class="col-4">
                 <div class="custom-control custom-switch">
-                    {% if  not opts.mean_mode == None %}
-                    <input class="custom-control-input" type="checkbox" name="mean_mode" value="1" checked=""
-                        id="id_mean_mode">
-                    {% else %}
-                    <input class="custom-control-input" type="checkbox" name="mean_mode" value="1" id="id_mean_mode">
-                    {% endif %}
+                    <input class="custom-control-input" type="checkbox" role="checkbox" name="mean_mode" value="1"
+                        id="id_mean_mode" aria-expanded="false" aria-controls="mean_context" href="#mean_context"
+                        data-toggle="collapse">
                     <label class="custom-control-label" for="id_mean_mode">Średnia ruchoma</label>
+                </div>
+                <div class="custom-control custom-switch">
+                    <!--style="position: absolute; bottom: 10px;" -->
+                    <input class="custom-control-input" type="checkbox" name="show_tf" value="1" id="id_show_tf">
+                    <label class="custom-control-label" for="id_show_tf">Wykres funkcji TRT</label>
                 </div>
             </div>
         </div>

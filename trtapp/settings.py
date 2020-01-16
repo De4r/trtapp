@@ -23,9 +23,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '1(+d#=cl0vh8()quelpe0n=xe!abff&!5b1yaxdidcnd(36-a^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = True
 
-ALLOWED_HOSTS = ['de4r.pythonanywhere.com', '127.0.0.1']
+ALLOWED_HOSTS = ['de4r.pythonanywhere.com', '127.0.0.1', 'trt.herokuapp.com']
 
 
 # Application definition
@@ -124,6 +125,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATIC_ROOT = '/home/de4r/trtapp/static'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') # for Heroku
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 

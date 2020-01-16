@@ -54,12 +54,18 @@ def solver_view(request):
         p_model = ParametersModel.objects.get(model_name=chosen_model)
         print(p_model, opts)
         trt = Trt(p_model, opts)
-        plot_div = trt.handle_plot()
+        plot_div = trt.handle_all()
+        params = None
+        if 'fit_lin' in opts:
+            if opts['fit_lin'] == '1':
+                params = trt.yield_params()
+        
         return render(request, 'main/solver.html',
                   context={'plot_div': plot_div,
                   'models': parameters_models,
                   'opts': opts,
                   'plot_shown': True,
+                  'params': params,
                   })
     else:
         plot_div = None
