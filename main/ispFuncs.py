@@ -31,4 +31,4 @@ def plotIsp(fileObj):
         plot_div.append(plot(fig,
                              output_type='div', include_plotlyjs=False))
     
-    return plot_div, filename
+    return plot_div

@@ -20,7 +20,7 @@ class Trt():
         self.filename = os.path.join(
             settings.BASE_DIR, filename).replace('\\', '/')
         print(self.filename)
-        self.df = pd.read_csv(filename)
+        self.df = pd.read_csv(self.filename)
         self.df = checkTemperatureScale(self.df)
         self.T_g2 = self.df[temp_cols[1:3]].iloc[0].mean()
         print(self.T_g2)
