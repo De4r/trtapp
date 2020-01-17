@@ -26,7 +26,7 @@ SECRET_KEY = '1(+d#=cl0vh8()quelpe0n=xe!abff&!5b1yaxdidcnd(36-a^'
 # SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = True
 
-ALLOWED_HOSTS = ['de4r.pythonanywhere.com', '127.0.0.1', 'trt.herokuapp.com']
+ALLOWED_HOSTS = ['de4r.pythonanywhere.com', '127.0.0.1', 'trt.herokuapp.com',]
 
 
 # Application definition
@@ -39,10 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'main',
-    'crispy_forms',
+    # 'crispy_forms',
 ]
 
-CRISPY_TEMPLATE_PACK = 'bootstrap4'
+# CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -125,7 +125,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATIC_ROOT = '/home/de4r/trtapp/static'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') # for Heroku
+# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') # for Heroku
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
