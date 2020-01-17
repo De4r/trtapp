@@ -26,6 +26,7 @@ class Trt():
         print(self.T_g2)
         self.options = opts
         self.xlabel = 0
+        
 
     def yield_params(self):
         params = {'Q_mean': self.Q_mean, 'lambda': self.lam, 'rb': self.rb}
@@ -88,7 +89,7 @@ class Trt():
             else:
                 raise ValueError("Something went wrong in Q_v*ro*cp")
         else:
-            if self.Qv_mean:
+            if self.Qv_mean is not None:
                 # there is a Q_v field so will calc by T diff
                 if self.model.cp_m is not None and self.model.ro_m is not None:
                     self.df[o_cols[3]] = calculateHeatPower(
@@ -112,9 +113,11 @@ class Trt():
             if self.model.d_inn is not None:  # check d_inn * v
                 self.df[o_cols[1]] = calculateFlow(
                     self.df[o_cols[2]].values, d_inn=self.model.d_inn)
+                self.Qv_mean = self.df[o_cols[1]].mean()
             elif self.model.d_out is not None and self.model.r_g is not None:  # check d_out-2r_g * v
                 self.df[o_cols[1]] = calculateFlow(
                     self.df[o_cols[2]].values, d_out=self.model.d_out, r_g=self.model.r_g)
+                self.Qv_mean = self.df[o_cols[1]].mean()
             else:
                 raise ValueError("No pipe dimension provided")
         else:
@@ -130,6 +133,7 @@ class Trt():
             elif self.model.qv is not None:
                 self.Qv_mean = self.model.qv
             else:
+                self.Qv_mean = None
                 raise ValueError("No flow field provided. Checked 'Q_v', 'v'.")
         print(self.Qv_mean)
 
@@ -142,6 +146,7 @@ class Trt():
                 self.v_mean = self.model.v
                 print(self.v_mean)
             else:
+                self.v_mean = None
                 print("No velocity provided")
 
     def handle_fit_model(self):
