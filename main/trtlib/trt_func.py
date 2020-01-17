@@ -40,10 +40,10 @@ globTitles, globyAxis, globxAxis, globLineStyles
  """
 
 
-globTitles = ['Wykres temperatur z testu reakcji termicznej',
+globTitles = ['Wykres temperatur z TRT',
               'Wykres temperature z TRT <br> po usrednieniu oknem: ',
-              'Przebieg mocy cieplnej', 'Przebieg przepłwu',
-              'Wykres temperatury funkcji']
+              'Moc cieplna', 'Przepływ',
+              'Funkcja temperatury']
 globyLables = ['Temperatura [°C]', 'Przeplyw [m<sup>3</sup>/s]', 'Moc [W]']
 globxLabels = ['Czas [s]', 'Czas ln(t) [s]']
 globLineStyles = ['lines', 'markers', 'lines+markers']
