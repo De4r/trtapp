@@ -13,6 +13,7 @@ def plotIsp(fileObj):
     
     filename = fileObj.file_object.url[1:]
     filename = os.path.join(settings.BASE_DIR, filename).replace('\\', '/')
+    print(filename)
 
     df = pd.read_csv(filename)
     df['Time'] = pd.to_datetime(df['Time'], unit='s')
@@ -30,4 +31,4 @@ def plotIsp(fileObj):
         plot_div.append(plot(fig,
                              output_type='div', include_plotlyjs=False))
     
-    return plot_div
+    return plot_div, filename

@@ -19,6 +19,7 @@ class Trt():
         filename = f.file_object.url[1:]
         self.filename = os.path.join(
             settings.BASE_DIR, filename).replace('\\', '/')
+        print(self.filename)
         self.df = pd.read_csv(filename)
         self.df = checkTemperatureScale(self.df)
         self.T_g2 = self.df[temp_cols[1:3]].iloc[0].mean()
@@ -67,7 +68,7 @@ class Trt():
                                      m=self.modelParams[1], Tg=self.T_g2, 
                                      lam=self.lam, ro=self.model.ro, cp=self.model.cp, 
                                      r0=self.model.D_b/2)
-        print(self.lam, self.rb)
+            print(self.lam, self.rb)
 
 
     def handle_heat(self):

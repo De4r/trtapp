@@ -24,15 +24,16 @@ def isp_view(request):
     if request.method == 'POST':
         chosen_file = request.POST.get('chosen_file')
         f = UploadedFile.objects.get(file_name=chosen_file)
-        plot_div = plotIsp(f)
+        plot_div, filename = plotIsp(f)
     else:
         f = uploaded_files[0]
-        plot_div = plotIsp(f)
+        plot_div, filename = plotIsp(f)
     return render(request, 'main/isp.html',
                   context={'files': uploaded_files,
                            'plot_div': plot_div,
                            'file': f,
-                           'plot_shown': True,})
+                           'plot_shown': True,
+                           'filename': filename,})
 
 
 def trt(request):
