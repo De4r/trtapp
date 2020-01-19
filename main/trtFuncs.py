@@ -26,15 +26,18 @@ class Trt():
         print(self.T_g2)
         self.options = opts
         self.xlabel = 0
+        self.modelParams = None
         
 
     def yield_params(self):
-        params = {'Q_mean': self.Q_mean, 'lambda': self.lam, 'rb': self.rb}
-        if self.v_mean:
-            params['v_mean'] = self.v_mean
-        if self.Qv_mean:
-            params['Qv_mean'] = self.Qv_mean
-
+        if self.modelParams is not None:
+            params = {'Q_mean': self.Q_mean, 'lambda': self.lam, 'rb': self.rb}
+            if self.v_mean:
+                params['v_mean'] = self.v_mean
+            if self.Qv_mean:
+                params['Qv_mean'] = self.Qv_mean
+        else:
+            params = None
         return params
 
     def handle_all(self):
@@ -55,8 +58,8 @@ class Trt():
         return self.plot_data()
 
     def calc_params(self):
-        if self.check_bool('fit_lin'):
-            if self.model.H is not None:
+        if self.check_bool('fit_lin') and self.check_bool('show_tf'):
+            if self.model.H is not None and self.modelParams is not None:
                 self.lam = calculateLambda(
                     Q=self.Q_mean, H=self.model.H, k=self.modelParams[0])
                 if self.model.T_g is not None:

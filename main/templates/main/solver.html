@@ -2,7 +2,7 @@
 
 {% block content %}
 <!-- Here starts layout after 1st ask -->
-{% if plot_shown == True %}
+
 <h2 class="text-center">Obliczenia</h2>
 <br>
 <div class="row" style="border-style: groove; border-radius: 5px; border-width: 5px; border-color: #ecf0f1;">
@@ -38,10 +38,12 @@
                     <div class="custom-control custom-switch">
                         <!--style="position: absolute; bottom: 10px;" -->
                         {% if  not opts.show_tf == None %}
-                        <input class="custom-control-input" type="checkbox" name="show_tf" value="1" checked=""
-                            id="id_show_tf">
+                        <input class="custom-control-input" type="checkbox" role="checkbox" name="show_tf" value="1"
+                            checked="" id="id_show_tf">
                         {% else %}
-                        <input class="custom-control-input" type="checkbox" name="show_tf" value="1" id="id_show_tf">
+                        <input class="custom-control-input" type="checkbox" role="checkbox" name="show_tf" value="1"
+                            aria-expanded="false" aria-controls="fit_lin_div" href="#fit_lin_div" id="id_show_tf"
+                            data-toggle="collapse">
                         {% endif %}
                         <label class="custom-control-label" for="id_show_tf">Wykres funkcji TRT</label>
                     </div>
@@ -98,7 +100,25 @@
                                 ruchomego</label>
                         </div>
                     </div>
+                    {% else %}
+                    <div id="mean_context" class="collapse">
+                        <div class="form-group">
+                            <label class="form-label">Podaj liczbe próbek</label>
+                            <input class="form-control" type="text" name="win_len" placeholder="Liczba próbek"
+                                data-toggle="tooltip" data-placement="top" title="Domyślna liczba próbek: 5">
+                        </div>
+
+                        <div class="form-group">
+                            <div class="custom-control custom-switch">
+                                <input class="custom-control-input" type="checkbox" name="win_pos" value="1"
+                                    id="id_win_pos">
+                                <label class="custom-control-label" for="id_win_pos">Uśrednianie do środka okna
+                                    ruchomego</label>
+                            </div>
+                        </div>
+                    </div>
                     {% endif %}
+
                 </div>
                 <div class="col-6">
                     <div class="custom-control custom-switch">
@@ -106,8 +126,9 @@
                         <input class="custom-control-input" type="checkbox" name="mean_mode" value="1" checked=""
                             id="id_mean_mode">
                         {% else %}
-                        <input class="custom-control-input" type="checkbox" name="mean_mode" value="1"
-                            id="id_mean_mode">
+                        <input class="custom-control-input" type="checkbox" name="mean_mode" value="1" id="id_mean_mode"
+                            role="checkbox" aria-expanded="false" aria-controls="mean_context" href="#mean_context"
+                            data-toggle="collapse">
                         {% endif %}
                         <label class="custom-control-label" for="id_mean_mode">Średnia ruchoma</label>
                     </div>
@@ -119,15 +140,22 @@
 
                 </div>
                 <div class="col-6">
+
                     <div class="custom-control custom-switch">
                         {% if  not opts.fit_lin == None %}
                         <input class="custom-control-input" type="checkbox" name="fit_lin" value="1" checked=""
                             id="id_fit_lin">
-                        {% else %}
-                        <input class="custom-control-input" type="checkbox" name="fit_lin" value="1"
-                            id="id_fit_lin">
-                        {% endif %}
                         <label class="custom-control-label" for="id_fit_lin">Dopasuj model liniowy</label>
+                        {% elif not opts.show_tf == None %}
+                        <input class="custom-control-input" type="checkbox" name="fit_lin" value="1" id="id_fit_lin">
+                        <label class="custom-control-label" for="id_fit_lin">Dopasuj model liniowy</label>
+                        {% else %}
+                        <div id="fit_lin_div" class="collapse">
+                            <input class="custom-control-input" type="checkbox" name="fit_lin" value="1"
+                                id="id_fit_lin">
+                            <label class="custom-control-label" for="id_fit_lin">Dopasuj model liniowy</label>
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -137,19 +165,56 @@
                 <div class="col-6"></div>
                 <div class="col-6">
                     <button type="submit" class="btn btn-primary btn-block" data-toggle="tooltip" data-placement="top"
-                        title="Pokaż dane" >Pokaż
+                        title="Pokaż dane">Pokaż
                         wykres</button>
                 </div>
             </div>
             <br>
             {% if params is not None %}
+            <h3 class="text-center text-info">Wyniki</h3>
             <div class="row align-items-center">
-                <div class="col-6">
-                    <h3 class="text-center text-info">Wyniki</h3>
-                    {% for key, value in params.items %}
-                        <p class="text-primary">{{key}}: {{ value|stringformat:".2e"}}</p>
-                    {% endfor %}
-                </div>
+                <table class="table table-hover">
+                    <thead>
+                        <tr class="table">
+                            <th>Parametr</th>
+                            <th>Jednostka</th>
+                            <th>Wartość</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr class="table">
+                            <td>Efektywny współ. przew.</td>
+                            <td>W/(m&#183;K)</td>
+                            <td>{{params.lambda|floatformat:2}}</td>
+                        </tr>
+                        <tr class="table">
+                            <td>Rezys. term. odwiertu</td>
+                            <td>K/(W/m)</td>
+                            <td>{{params.rb|floatformat:2}}</td>
+                        </tr>
+                        <tr class="table">
+                            <td>Średnia moc</td>
+                            <td>W</td>
+                            <td>{{params.Q_mean|floatformat:2}}</td>
+                        </tr>
+                        {% if "Qv_mean" in params %}
+                        <tr class="table">
+                            <td>Średni przepływ</td>
+                            <td>m<sup>3</sup>/s</td>
+                            <td>{{params.Qv_mean|stringformat:".2e"}}</td>
+                        </tr>
+                        {% endif %}
+                        {% if "v_mean" in params %}
+                        <tr class="table">
+                            <td>Średnia prędkość</td>
+                            <td>m/s</td>
+                            <td>{{params.v_mean|floatformat:2}}</td>
+                        </tr>
+                        {% endif %}
+
+                    </tbody>
+                </table>
                 
             </div>
             {% endif %}
@@ -168,99 +233,4 @@
     </div>
 </div>
 
-
-<!-- Here starts 1st layout -->
-{% else %}
-<div class="jumbotron">
-    <h2 class="text-center">Obliczenia</h2>
-    <br>
-    <form action="" method='POST'>
-        {% csrf_token %}
-        <div class="row">
-            <div class="col-8">
-                <label class="form-label" for="id_chosen_model">Model parametrów</label>
-                <select class="form-control" id="id_chosen_model" name='chosen_model'>
-                    {% for model in models %}
-                    {% if opts.chosen_model == model.model_name %}
-                    <option selected="selected"> {{ model.model_name }} </option>
-                    {% else %}
-                    <option> {{ model.model_name }} </option>
-                    {% endif %}
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="col-4">
-                <div class="custom-control custom-switch" style="position: absolute; bottom: 10px;">
-                    {% if  not opts.log_scale == None %}
-                    <input class="custom-control-input" type="checkbox" name="log_scale" value="1" checked=""
-                        id="id_log_scale">
-                    {% else %}
-                    <input class="custom-control-input" type="checkbox" name="log_scale" value="1" id="id_log_scale">
-                    {% endif %}
-                    <label class="custom-control-label" for="id_log_scale">Skala logarytmiczna</label>
-                </div>
-
-            </div>
-
-        </div>
-        <br>
-
-        <div class="row">
-            <div class="col-4">
-                <!-- <div class="form-group" >
-                    <label class="form-label">Podaj granice okna czasowego</label>
-                    <input class="form-control" type="text" name="t_1" placeholder="Dolna granica">
-                    <input class="form-control" type="text" name="t_2" placeholder="Górna granica">
-                </div> -->
-            </div>
-
-            <div class="col-4">
-                <div id="mean_context" class="collapse">
-                    <div class="form-group">
-                        <label class="form-label">Podaj liczbe próbek</label>
-                        <input class="form-control" type="text" name="win_len" placeholder="Liczba próbek">
-                    </div>
-
-                    <div class="form-group">
-                        <div class="custom-control custom-switch">
-                            <input class="custom-control-input" type="checkbox" name="win_pos" value="1"
-                                id="id_win_pos">
-                            <label class="custom-control-label" for="id_win_pos">Uśrednianie do środka okna
-                                ruchomego</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-
-            <div class="col-4">
-                <div class="custom-control custom-switch">
-                    <input class="custom-control-input" type="checkbox" role="checkbox" name="mean_mode" value="1"
-                        id="id_mean_mode" aria-expanded="false" aria-controls="mean_context" href="#mean_context"
-                        data-toggle="collapse">
-                    <label class="custom-control-label" for="id_mean_mode">Średnia ruchoma</label>
-                </div>
-                <div class="custom-control custom-switch">
-                    <!--style="position: absolute; bottom: 10px;" -->
-                    <input class="custom-control-input" type="checkbox" name="show_tf" value="1" id="id_show_tf">
-                    <label class="custom-control-label" for="id_show_tf">Wykres funkcji TRT</label>
-                </div>
-            </div>
-        </div>
-
-        <br>
-        <div class="row">
-            <div class="col-4">
-                <button type="submit" class="btn btn-primary" data-toggle="tooltip" data-placement="top"
-                    title="Pokaż dane">Pokaż
-                    wykres</button>
-                <input name="plot_shown" value="{{ plot_shown }}" style="display: none;"></input>
-            </div>
-        </div>
-
-    </form>
-    {% endif %}
-
-</div>
 {% endblock %}

@@ -70,7 +70,7 @@ def solver_view(request):
                   })
     else:
         plot_div = None
-    return render(request, 'main/solver.html',
+    return render(request, 'main/solver_start.html',
                   context={'plot_div': plot_div,
                   'models': parameters_models})
 
