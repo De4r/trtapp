@@ -50,9 +50,35 @@
         </div>
         <br>
     </div>
-    <div style="max-width: none;">
-        {% for plot in plot_div %}
-        <div class="container" style="max-width: none;">
+    <div class="row align-items-center" style="max-width: none;">
+        {% for plot, stat in data %}
+        <div class="col-4">
+            <table class="table table-hover">
+                <thead>
+                    <tr class="table">
+                        <th>Pomiar</th>
+                        <th>Średnia</th>
+                        <th>Maks.</th>
+                        <th>Min.</th>
+                        <th>Odch. stand.</th>
+                        <th>War.</th>
+                    </tr>
+                </thead>
+                {% for pom in stat %}
+                <tbody>
+                    <tr class="table">
+                        <td>{{pom.name}}</td>
+                        <td>{{pom.mean|floatformat:2}}</td>
+                        <td>{{pom.max|floatformat:2}}</td>
+                        <td>{{pom.min|floatformat:2}}</td>
+                        <td>{{pom.std|floatformat:2}}</td>
+                        <td>{{pom.var|floatformat:2}}</td>
+                    </tr>
+                </tbody>
+                {% endfor %}
+            </table>
+        </div>
+        <div class="col-8" style="max-width: none;">
             {% autoescape off %}
             {{ plot }}
             {% endautoescape %}

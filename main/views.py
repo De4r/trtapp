@@ -8,7 +8,7 @@ import plotly.graph_objs as go
 import pandas as pd
 import os
 from django.conf import settings
-from .ispFuncs import plotIsp
+from .ispFuncs import IspFile
 from .trtFuncs import Trt
 # Create your views here.
 
@@ -24,15 +24,20 @@ def isp_view(request):
     if request.method == 'POST':
         chosen_file = request.POST.get('chosen_file')
         f = UploadedFile.objects.get(file_name=chosen_file)
-        plot_div = plotIsp(f)
     else:
         f = uploaded_files[0]
-        plot_div = plotIsp(f)
+
+    isp = IspFile(f)
+    plot_div = isp.plotIsp()
+    stats = isp.get_all_stats()
+    data = zip(plot_div, stats)
     return render(request, 'main/isp.html',
                   context={'files': uploaded_files,
                            'plot_div': plot_div,
                            'file': f,
                            'plot_shown': True,
+                           'stats': stats,
+                           'data': data,
                            })
 
 

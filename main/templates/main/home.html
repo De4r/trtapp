@@ -48,11 +48,14 @@
                 </b></h3>
             <span class="text-justify">
                 <h4>
-                    Moduł ten odpowiada za wprowadzanie parametrów testu na serwer, ich zapisywanie, przeglądanie
+                    Moduł ten odpowiada za wprowadzanie parametrów testu reakcji termicznej na serwer, ich zapisywanie,
+                    przeglądanie
                     oraz usuwanie. W zakładce <a href="{% url 'main:parameters_list' %}">parametery</a> można
-                    zobaczyć aktulanie dostępne parametry w bazie danych, przejść do wypisania wartości lub
+                    zobaczyć aktulanie dostępne parametry w bazie danych, przejść do wypisania wprowadzonych wartości,
+                    ich edycji lub
                     usunąć parametry z bazy danych. Drugą zakładką jest formularz <a href="{% url 'main:parameters' %}">
-                        dodawania parametrów</a> do bazy danych. Formularz pozwala na wprowadzenie danych (pogrubione są wymagane zawsze):
+                        dodawania parametrów</a> do bazy danych. Formularz pozwala na wprowadzenie danych (pogrubione są
+                    wymagane zawsze):
                     <ul>
                         <li>Nazwa modelu - widoczna na serwerze nazwa modelu parametrów</li>
                         <li>Opis modelu - dodatkowy opis modelu służący do dodania informacji o nim</li>
@@ -60,14 +63,21 @@
                         <ul class="text-info">
                             <span class="text-primary">Kolumny (nagłówki pliku csv) powinny posiadać poniższe nazwy,
                                 dobrze aby została zachowana ewentualna kolejność. Konieczne wartości:</span>
-                            <li>t - kolumna czasu [s]</li>
-                            <li>T_in - temperatura na wlocie do wymiennnika [&#176;C]</li>
-                            <li>T_out - temperatura na wylocie z wymiennnika [&#176;C]</li>
-                            <span class="text-primary">Wartości dodatkowe, posłużą do obliczeń,
-                                jeśli któraś nie zostanie podana to zostaną obliczone z innych dostępnych danych.</span>
+                            <li><b>t</b> - kolumna czasu [s]</li>
+                            <li><b>T_in</b> - temperatura na wlocie do wymiennnika [&#176;C]</li>
+                            <li><b>T_out</b> - temperatura na wylocie z wymiennnika [&#176;C]</li>
+                            <span class="text-primary">Wartości dodatkowe, które po wprowadzeniu posłużą do obliczeń.
+                                Jeśli któryś z poniższych parametrów nie zostanie podany, to jeśli to możliwe zostanie
+                                obliczony z innych dostępnych danych. Jeżeli nie będzie dało się go wyliczyć zostanie
+                                przyjęty jako wprowadzony w formularzu.</span>
                             <li>Q_v - przepływ czynnika przez wymiennik [m<sup>3</sup>/s]</li>
                             <li>v - prędkość przepływu [m/s]</li>
                             <li>Q - moc cieplna [W]</li>
+                            <span class="text-primary">Prędkość przepływu może posłużyć do wyznaczenia przepływu jeśli
+                                wprowadzone zostały odpowiednie wymiary rur wymiennika. Z kolei moc może zostać
+                                wyznaczona
+                                na podstawie różnicy temperatury i przepływu czynnika.
+                            </span>
                         </ul>
                         <li>Parametry testu - parametry testu w postaci wartości średnich:</li>
                         <ul class="text-info">
@@ -75,38 +85,64 @@
                             <li>q - średnia moc cieplna [W]</li>
                             <li>v - średnia prędkość przepływu przez wymiennik [m/s]</li>
                             <span class="text-primary">W przypadku pól które można wprowadzić na różne sposoby
-                                priorytet mają dane w pliku. Na przykład kolumna 'v' w pliku jest ważniejsza niż 
-                                wartość średnia v. Z kolei kolumna 'Q_v' jest ważniejsza niż wprowadzone qv. Jesli
-                                wprowadzimy kolumne v i jakiś parametr rury to 'Q_v' zostanie wyliczone z średnicy i 
-                                prędkości, ostatecznie jeśli nie będzie się dało wyliczyć 'Q_v' zostanie pobrana z 
-                                pola qv jako wartość średnia.
+                                priorytet mają dane w pliku. Na przykład kolumna prędkości przepływu ('v') w pliku jest
+                                ważniejsza niż
+                                wartość średnia v. Z kolei kolumna przeływu ('Q_v') jest ważniejsza niż wprowadzony
+                                przepływ - qv. Jesli
+                                wprowadzimy kolumne prędkości ('v') i jakiś parametr rury to przepłw ('Q_v') zostanie
+                                wyliczone z średnicy i
+                                prędkości, ostatecznie jeśli nie będzie się dało wyliczyć przepływu zostanie on pobrany
+                                z
+                                pola qv jako wartość średnia, pod warunkiem że nie wprowadzono w pliku kolumny 'Q_v'.
+                                Podobnie jest z mocą,
+                                pierwszeństwo ma kolumna 'Q', jeśli nie została podana a da sie ją wyliczyć z przepływu
+                                to zostanie wyliczona,
+                                ostatecznie zostanie podjęta próba pobrania wartości średniej z formularza.
                             </span>
                         </ul>
                         <li>Parametry medium - parametry cieczy użytej w teście:</li>
                         <ul class="text-info">
-                            <li>cp_m - ciepło właściwe cieczy [J/(kg&#183;K)]</li>
-                            <li>ro_m - gęstość cieczy [kg/m<sup>3</sup>]</li>
+                            <li><b>cp_m</b> - ciepło właściwe cieczy [J/(kg&#183;K)]</li>
+                            <li><b>ro_m</b> - gęstość cieczy [kg/m<sup>3</sup>]</li>
                             <li>mi_m - współczynnik lepkości dynamicznej [Pa&#183;s]</li>
                             <li>lam_m - współczynnik przewodzenia płynu [W/(m&#183;K)]</li>
+                            <span class="text-primary">Ciepło właściwe cieczy oraz jego gęstość są potrzebne w przypadku
+                                konieczności wyznaczenie mocy cieplnej z przepływu oraz różnicy temperatury na wejściu i
+                                wyjściu z wymiennika. Współczynnik przewodzenia i lepkości dynamicznej nie są używane w
+                                obliczeniach.
+                            </span>
                         </ul>
                         <li>Parametry górotworu (wartości średnie):</li>
                         <ul class="text-info">
-                            <li>cp - ciepło właściwe cieczy [J/(kg&#183;K)]</li>
-                            <li>ro - gęstość górotworu [kg/m<sup>3</sup>]</li>
+                            <li><b>cp</b> - ciepło właściwe cieczy [J/(kg&#183;K)]</li>
+                            <li><b>ro</b> - gęstość górotworu [kg/m<sup>3</sup>]</li>
                             <li>alfa - &#945; - dyfyzyjność [m<sup>2</sup>/s]</li>
                             <li>T_g - niezakłócona temperatura gruntu [&#176;C]</li>
+                            <span class="text-primary">Ciepło właściwe górotworu oraz jego gęstość są potrzebne do
+                                wyznaczenia
+                                rezystancji termicznej odwiertu. Dyfuzyjność oraz temperatura niezakłócona gruntu są
+                                opcjonalne,
+                                w przypadku podania temperatury zostanie ona pobrana przez algorytm, z kolei w przypadku
+                                jej braku
+                                zostanie wyznaczona jako średnia z pierwszych wartości kolumn T_in i T_out.
+                            </span>
                         </ul>
                         <li>Parametry wymiennika:</li>
                         <ul class="text-info">
-                            <li>H - głębkość wymiennika [m]</li>
-                            <li>D_b - średnica otworu pod wymiennik [m]</li>
+                            <li><b>H</b> - głębkość wymiennika [m]</li>
+                            <li><b>B_b</b> - średnica otworu pod wymiennik [m]</li>
                             <li>d_out - średnica zewnętrzna rury [m]</li>
                             <li>d_inn - średnica wewnętrzna rury [m]</li>
                             <li>r_g - grubość ścianki rury [m]</li>
+                            <span class="text-primary">Głebkość wymiennika oraz jego średnica są wymagane, pozostałe
+                                parametry
+                                posłużą jeśli to potrzebne do wyznaczenia przepływu jeśli została podana prędkość
+                                przpływu. Wystarczy
+                                wprowadzić średnice wewnętrzna rury lub zewnętrzna wraz z grubością ścianki. Mowa tu o
+                                rurze przez, która
+                                przepływa czynnik.
+                            </span>
                         </ul>
-                        <span class="text-primary">Parametry rury odnoszą się do rury przez którą
-                            przeływa czynnik. Slużą one do ewentualnego wyznaczenia przepływu z
-                            prędkości i wymiarów geometrycznych.</span>
                     </ul>
                 </h4>
             </span>
@@ -117,6 +153,20 @@
                     Moduł obliczeń
                 </b></h3>
             <span class="text-justify">
+                <h4>
+                    Moduł obliczeń służy do przeprowadzenia interpretacji testu. Po odpowiednim wprowadzeniu parametrów
+                    w zakładce <a href="{% url 'main:parameters' %}">Parametry</a> można je wybrać z listy. Po wybraniu
+                    na pierwszej stronie obliczeń dostępne są ustawienia skali logarytmicznej czasu, wykresu funkcji T_f
+                    tj. funkcji służącej do dopasowania modelu regeresji. Dodatkowo można wybrać sposób uśredniania
+                    przebiegów.
+                    Po zatwierdzeniu wyboru za pomocą przycisku "Pokaż wykres" wyświetlona zostanie kolejna strona
+                    związana z
+                    interpratacją pomiarów. Jeśli zaznaczona zostanie opcja wykresu funkcji TRT pojawi się opcja
+                    dopasowania
+                    regresji liniowej, na tej podstawie wyznaczone zostaną wyniki, które pojawią się poniżej
+                    wprowadzonych
+                    parametrów interpretacji.
+                </h4>
             </span>
         </span>
     </div>

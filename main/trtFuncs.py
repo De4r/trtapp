@@ -27,7 +27,6 @@ class Trt():
         self.options = opts
         self.xlabel = 0
         self.modelParams = None
-        
 
     def yield_params(self):
         if self.modelParams is not None:
@@ -63,17 +62,15 @@ class Trt():
                 self.lam = calculateLambda(
                     Q=self.Q_mean, H=self.model.H, k=self.modelParams[0])
                 if self.model.T_g is not None:
-                    self.rb = calcRb(H=self.model.H, Q=self.Q_mean,
-                                     m=self.modelParams[1], Tg=self.model.T_g, 
-                                     lam=self.lam, ro=self.model.ro, cp=self.model.cp, 
-                                     r0=self.model.D_b/2)
+                    Tg = self.model.T_g
                 else:
-                    self.rb = calcRb(H=self.model.H, Q=self.Q_mean,
-                                     m=self.modelParams[1], Tg=self.T_g2, 
-                                     lam=self.lam, ro=self.model.ro, cp=self.model.cp, 
-                                     r0=self.model.D_b/2)
-            print(self.lam, self.rb)
-
+                    Tg = self.T_g2
+                
+                self.rb = calcRb(H=self.model.H, Q=self.Q_mean,
+                                 m=self.modelParams[1], Tg=Tg,
+                                 lam=self.lam, ro=self.model.ro, cp=self.model.cp,
+                                 r0=self.model.D_b/2)
+            print('Parameters: ', self.lam, self.rb)
 
     def handle_heat(self):
         # check if Q column was provided
@@ -89,65 +86,66 @@ class Trt():
                 self.df[o_cols[3]] = calculateHeatPower(
                     self.df[cols], ro=self.model.ro_m, cp=self.model.cp_m)
                 self.Q_mean = self.df[o_cols[3]].mean()
+            # because if no cp and ro then only q field
             else:
-                raise ValueError("Something went wrong in Q_v*ro*cp")
+                if self.model.q is not None:
+                    self.Q_mean = self.model.q
+                else:
+                    raise ValueError(
+                        "Something went wrong in Q_v*ro*cp. Can't calcualte parametres with no heat power")
         else:
             if self.Qv_mean is not None:
                 # there is a Q_v field so will calc by T diff
                 if self.model.cp_m is not None and self.model.ro_m is not None:
                     self.df[o_cols[3]] = calculateHeatPower(
-                        self.df[temp_cols[1:3]], ro=self.model.ro_m, 
+                        self.df[temp_cols[1:3]], ro=self.model.ro_m,
                         cp=self.model.cp_m, Qv=self.Qv_mean)
                     self.Q_mean = self.df[o_cols[3]].mean()
                 else:
-                    raise ValueError("Something went wrong in Qv_mean*ro*cp")
+                    raise ValueError(
+                        "Something went wrong in Q_v*ro*cp. Can't calcualte parametres with no heat power")
             elif self.model.q is not None:
                 self.Q_mean = self.model.q
             else:
                 raise ValueError("Any Q cant be calculated")
-        print(self.Q_mean)
+        print('Heat power: ', self.Q_mean)
 
     def handle_flow(self):
         # check if a Q_v column was provided
         if o_cols[1] in self.df.columns.values:
             self.Qv_mean = self.df[o_cols[1]].mean()
-        # check if colum v was provided
+        # check if colum v was provided , try calc by 'v' and dimensions
         elif o_cols[2] in self.df.columns.values:
-            if self.model.d_inn is not None:  # check d_inn * v
-                self.df[o_cols[1]] = calculateFlow(
-                    self.df[o_cols[2]].values, d_inn=self.model.d_inn)
-                self.Qv_mean = self.df[o_cols[1]].mean()
-            elif self.model.d_out is not None and self.model.r_g is not None:  # check d_out-2r_g * v
-                self.df[o_cols[1]] = calculateFlow(
-                    self.df[o_cols[2]].values, d_out=self.model.d_out, r_g=self.model.r_g)
-                self.Qv_mean = self.df[o_cols[1]].mean()
+            ok = self.try_calc_flow(self.df[o_cols[2]].values)
+            if ok == False and self.model.qv is not None:
+                self.Qv_mean = self.model.qv
             else:
-                raise ValueError("No pipe dimension provided")
+                self.Qv_mean = None
+                print('No flow provided!')
+                pass
         else:
             if self.v_mean:
-                if self.model.d_inn is not None:  # check d_inn * v
-                    self.Qv_mean = calculateFlow(
-                        self.v_mean, d_inn=self.model.d_inn)
-                elif self.model.d_out is not None and self.model.r_g is not None:  # check d_out-2r_g * v
-                    self.Qv_mean = calculateFlow(
-                        self.v_mean, d_out=self.model.d_out, r_g=self.model.r_g)
-                else:
-                    raise ValueError("No pipe dimension provided")
+                self.try_calc_flow(self.v_mean)
             elif self.model.qv is not None:
                 self.Qv_mean = self.model.qv
             else:
                 self.Qv_mean = None
-                raise ValueError("No flow field provided. Checked 'Q_v', 'v'.")
-        print(self.Qv_mean)
+                print('No flow provided!')
+                pass
+        print('Flow: ', self.Qv_mean)
 
     def handle_velocity(self):
+        # first take column flow and calc mean in window
         if o_cols[2] in self.df.columns.values:
             self.v_mean = df[o_cols[2]].mean()
-            print(self.v_mean)
+            print('Velocity: ', self.v_mean)
+        # if there is no column:
         else:
+            # check if is provided in model
             if self.model.v is not None:
                 self.v_mean = self.model.v
-                print(self.v_mean)
+                print('Velocity: ', self.v_mean)
+            # else take as None
             else:
                 self.v_mean = None
                 print("No velocity provided")
@@ -252,3 +250,19 @@ class Trt():
             return True
         else:
             return False
+
+    def try_calc_flow(self, velocity):
+        # try to do v * d_inn^2*pi
+        if self.model.d_inn is not None:
+            self.df[o_cols[1]] = calculateFlow(
+                velocity, d_inn=self.model.d_inn)
+            self.Qv_mean = self.df[o_cols[1]].mean()
+        # try to do v * (d_out-2r_g)^2*pi
+        elif self.model.d_out is not None and self.model.r_g is not None:
+            self.df[o_cols[1]] = calculateFlow(
+                velocity, d_out=self.model.d_out, r_g=self.model.r_g)
+            self.Qv_mean = self.df[o_cols[1]].mean()
+        else:
+            print("Lack of pipe dimensions")
+            return False
+        return True
