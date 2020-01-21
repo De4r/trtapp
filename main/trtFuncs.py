@@ -40,14 +40,17 @@ class Trt():
         return params
 
     def handle_all(self):
+        self.handle_raw_plot()
+        # calc average here, create new DataFrame with filtered signal
+        self.handle_ma()
+
         self.handle_time()
         self.handle_time_window()
         # we analize in Window now
         self.handle_velocity()
         self.handle_flow()
         self.handle_heat()
-        # calc average here
-        self.handle_ma()
+
         # others below are based on smoothed data
         self.handle_tf()
         self.handle_fit_model()
@@ -55,6 +58,12 @@ class Trt():
         self.calc_params()
 
         return self.plot_data()
+
+    def handle_raw_plot(self):
+        if self.check_bool('plot_raw'):
+            self.df_raw = self.df.copy(deep=True)
+        else:
+            self.df_raw = None
 
     def calc_params(self):
         if self.check_bool('fit_lin') and self.check_bool('show_tf'):
@@ -65,7 +74,7 @@ class Trt():
                     Tg = self.model.T_g
                 else:
                     Tg = self.T_g2
-                
+
                 self.rb = calcRb(H=self.model.H, Q=self.Q_mean,
                                  m=self.modelParams[1], Tg=Tg,
                                  lam=self.lam, ro=self.model.ro, cp=self.model.cp,
@@ -173,11 +182,14 @@ class Trt():
                     t_2 = 0
 
             if t_1 != 0 and t_2 != 0:
-                self.df = trimData(self.df, temp_cols[0], t_1=t_1, t_2=t_2)
+                self.df, self.df_raw = trimData(
+                    self.df, temp_cols[0], t_1=t_1, t_2=t_2, df_raw=self.df_raw)
             elif t_1 != 0:
-                self.df = trimData(self.df, temp_cols[0], t_1=t_1)
+                self.df, self.df_raw = trimData(
+                    self.df, temp_cols[0], t_1=t_1, df_raw=self.df_raw)
             elif t_2 != 0:
-                self.df = trimData(self.df, temp_cols[0], t_2=t_2)
+                self.df, self.df_raw = trimData(
+                    self.df, temp_cols[0], t_2=t_2, df_raw=self.df_raw)
             else:
                 pass
 
@@ -185,57 +197,145 @@ class Trt():
         if self.check_bool('log_scale'):
             self.df[temp_cols[0]] = timeToLogScale(self.df[temp_cols[0]])
             self.xlabel = 1
+            if self.df_raw is not None:
+                self.df_raw[temp_cols[0]] = timeToLogScale(
+                    self.df_raw[temp_cols[0]])
 
     def handle_ma(self):
-        if self.check_bool('mean_mode'):
-            # check for position and win_len
-            if self.check_number('win_len'):
-                window_len = int(self.options['win_len'])
-            else:
-                window_len = 5
-            if self.check_bool('win_pos'):
-                center = True
-            else:
-                center = False
+        if self.check_bool('mean'):
+
             cols = self.df.columns[1:]
             print(cols)
-            self.df[cols] = calcMovingAverage(
-                self.df[cols], window_len=window_len, center=center)
+            if self.options['mean_mode'] == 'movavg':
+                if self.check_bool('win_pos'):
+                    center = True
+                else:
+                    center = False
+
+                if self.check_number('win_len_mov'):
+                    window_len = int(self.options['win_len_mov'])
+                else:
+                    window_len = 5
+                self.df[cols] = calcMovingAverage(
+                    self.df[cols], window_len=window_len, center=center)
+
+            elif self.options['mean_mode'] == 'savgol':
+                if self.check_number('win_len_savgol'):
+                    window_len = int(self.options['win_len_savgol'])
+                    if (window_len % 2) == 0:
+                        window_len = window_len - 1
+                else:
+                    window_len = 5
+
+                if self.check_number('polyorder'):
+                    order = int(self.options['polyorder'])
+                else:
+                    order = 3
+
+                self.df[cols] = apply_salv_filter(
+                    self.df[cols], window_len=window_len, order=order)
 
     def plot_data(self, xlabel=0):
         try:
             plot_div = []
-            # if T_f plot, then 1st
-            if 'T_f' in self.df.columns.values:
-                if self.check_bool('fit_lin'):
-                    fig = plotModels(
-                        self.df[['t', 'T_f']], self.modelParams, 0, style=0)
-                else:
+            if self.df_raw is not None:
+                # if T_f plot, then 1st
+                if 'T_f' in self.df.columns.values:
+                    if self.check_bool('fit_lin'):
+                        fig = plotModels(
+                            self.df[['t', 'T_f']], self.modelParams, 0, style=0)
+                    else:
+                        fig = createPlot(
+                            self.df[['t', 'T_f']], xlabel=xlabel, title=3)
+                    plot_div.append(
+                        plt.plot(fig, output_type='div', include_plotlyjs=False))
+                # temperature plots
+                if 'T_surr' in self.df.columns.values:
+                    fig = createPlot(self.df_raw[temp_cols[:4]], xlabel=xlabel)
                     fig = createPlot(
-                        self.df[['t', 'T_f']], xlabel=xlabel, title=-1)
+                        self.df[temp_cols[:4]], xlabel=xlabel, fig=fig, style=0)
+                else:
+                    fig = createPlot(self.df_raw[temp_cols[:3]], xlabel=xlabel)
+                    fig = createPlot(
+                        self.df[temp_cols[:3]], xlabel=xlabel, fig=fig, style=0)
                 plot_div.append(
                     plt.plot(fig, output_type='div', include_plotlyjs=False))
-            # temperature plots
-            if 'T_surr' in self.df.columns.values:
-                fig = createPlot(self.df[temp_cols[:4]], xlabel=xlabel)
+
+                if o_cols[3] in self.df.columns.values:
+                    if o_cols[3] in self.df_raw.columns.values:
+                        fig = createPlot(self.df_raw[[o_cols[0], o_cols[3]]],
+                                         ylabel=2, title=1, xlabel=xlabel)
+                        fig = createPlot(self.df[[o_cols[0], o_cols[3]]],
+                                         ylabel=2, title=1, xlabel=xlabel, style=0, fig=fig)
+                    else:
+                        fig = createPlot(self.df[[o_cols[0], o_cols[3]]],
+                                         ylabel=2, title=1, xlabel=xlabel)
+                    plot_div.append(
+                        plt.plot(fig, output_type='div', include_plotlyjs=False))
+
+                if o_cols[1] in self.df.columns.values:
+                    if o_cols[1] in self.df_raw.columns.values:
+                        fig = createPlot(self.df_raw[o_cols[:2]],
+                                        ylabel=1, title=2, xlabel=xlabel)
+                        fig = createPlot(self.df[o_cols[:2]],
+                                        ylabel=1, title=2, xlabel=xlabel, style=0, fig=fig)
+                    else:
+                        fig = createPlot(self.df[o_cols[:2]],
+                                        ylabel=1, title=2, xlabel=xlabel)
+                    plot_div.append(
+                        plt.plot(fig, output_type='div', include_plotlyjs=False))
+
+                if o_cols[2] in self.df.columns.values:
+                    if o_cols[1] in self.df_raw.columns.values:
+                        fig = createPlot(self.df_raw[[o_cols[0], o_cols[2]]],
+                                        ylabel=3, title=4, xlabel=xlabel)
+                        fig = createPlot(self.df[[o_cols[0], o_cols[2]]],
+                                        ylabel=3, title=4, xlabel=xlabel, style=0, fig=fig)
+                    else:
+                        fig = createPlot(self.df[[o_cols[0], o_cols[2]]],
+                                        ylabel=3, title=4, xlabel=xlabel)
+                    plot_div.append(
+                        plt.plot(fig, output_type='div', include_plotlyjs=False))
+
+                return plot_div
             else:
-                fig = createPlot(self.df[temp_cols[:3]], xlabel=xlabel)
-            plot_div.append(
-                plt.plot(fig, output_type='div', include_plotlyjs=False))
-
-            if o_cols[3] in self.df.columns.values:
-                fig = createPlot(self.df[[o_cols[0], o_cols[3]]],
-                                 ylabel=2, title=2, xlabel=xlabel)
+                # if T_f plot, then 1st
+                if 'T_f' in self.df.columns.values:
+                    if self.check_bool('fit_lin'):
+                        fig = plotModels(
+                            self.df[['t', 'T_f']], self.modelParams, 0, style=0)
+                    else:
+                        fig = createPlot(
+                            self.df[['t', 'T_f']], xlabel=xlabel, title=3)
+                    plot_div.append(
+                        plt.plot(fig, output_type='div', include_plotlyjs=False))
+                # temperature plots
+                if 'T_surr' in self.df.columns.values:
+                    fig = createPlot(self.df[temp_cols[:4]], xlabel=xlabel)
+                else:
+                    fig = createPlot(self.df[temp_cols[:3]], xlabel=xlabel)
                 plot_div.append(
                     plt.plot(fig, output_type='div', include_plotlyjs=False))
 
-            if o_cols[1] in self.df.columns.values:
-                fig = createPlot(self.df[o_cols[:2]],
-                                 ylabel=1, title=-2, xlabel=xlabel)
-                plot_div.append(
-                    plt.plot(fig, output_type='div', include_plotlyjs=False))
+                if o_cols[3] in self.df.columns.values:
+                    fig = createPlot(self.df[[o_cols[0], o_cols[3]]],
+                                     ylabel=2, title=1, xlabel=xlabel)
+                    plot_div.append(
+                        plt.plot(fig, output_type='div', include_plotlyjs=False))
 
-            return plot_div
+                if o_cols[1] in self.df.columns.values:
+                    fig = createPlot(self.df[o_cols[:2]],
+                                     ylabel=1, title=2, xlabel=xlabel)
+                    plot_div.append(
+                        plt.plot(fig, output_type='div', include_plotlyjs=False))
+
+                if o_cols[2] in self.df.columns.values:
+                    fig = createPlot(self.df[[o_cols[0], o_cols[2]]],
+                                     ylabel=3, title=4, xlabel=xlabel)
+                    plot_div.append(
+                        plt.plot(fig, output_type='div', include_plotlyjs=False))
+
+                return plot_div
         except Exception as e:
             return e
 

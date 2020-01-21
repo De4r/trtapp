@@ -5,6 +5,7 @@ import plotly.graph_objects as go
 # from sklearn.linear_model import LinearRegression, Ridge, Lasso # no space on free hosting
 import scipy as sp
 from scipy.stats import linregress
+from scipy.signal import savgol_filter
 
 
 """ Assummtions:
@@ -41,26 +42,34 @@ globTitles, globyAxis, globxAxis, globLineStyles
 
 
 globTitles = ['Wykres temperatur z TRT',
-              'Wykres temperature z TRT <br> po usrednieniu oknem: ',
               'Moc cieplna', 'Przepływ',
-              'Funkcja temperatury']
-globyLables = ['Temperatura [°C]', 'Przeplyw [m<sup>3</sup>/s]', 'Moc [W]']
+              'Funkcja temperatury', 'Prędkość przepływu']
+globyLables = ['Temperatura [°C]', 'Przeplyw [m<sup>3</sup>/s]', 'Moc [W]', 'Predkość [m/s]']
 globxLabels = ['Czas [s]', 'Czas ln(t) [s]']
 globLineStyles = ['lines', 'markers', 'lines+markers']
 gamma = 0.5772
 
 
 def createPlot(df, title=0, ylabel=0, xlabel=0, *args, **kwargs):
-    fig = go.Figure()
+    if 'fig' in kwargs:
+        add_traces = True
+        fig = kwargs.get('fig')
+    else:
+        add_traces = False
+        fig = go.Figure()
     # assuming that df is passed to plot, where 1st colum is x Axis,
     # rest will be plotted with legend as col name !
     if 'style' in kwargs:
         style = kwargs.get('style')
     else:
         style = -1
-
+    
     for col in df.columns[1:]:
-        fig.add_trace(go.Scatter(
+        if add_traces:
+            fig.add_trace(go.Scatter(
+            x=df[df.columns[0]], y=df[col], mode=globLineStyles[style], name=col))
+        else:
+            fig.add_trace(go.Scatter(
             x=df[df.columns[0]], y=df[col], mode=globLineStyles[style], name=col))
 
     # titleText = globTitles[title]
@@ -150,11 +159,18 @@ def calcMovingAverage(df, window_len=15, min_periods=1, center=False):
     return df
 
 
+def apply_salv_filter(df, window_len=7, order=3, method='nearest', **kwargs):
+    for col in df.columns:
+        df[col] = savgol_filter(
+            df[col], window_length=window_len, polyorder=order, **kwargs)
+    return df
+
+
 def timeToLogScale(df):
     return np.log(df)
 
 
-def trimData(df, col, t_1=0, t_2=-1):
+def trimData(df, col, t_1=0, t_2=-1, df_raw=None):
     try:
         id_x = []
         id_x.append(df.loc[df[col] >= t_1].index.values.astype(int)[0])
@@ -165,14 +181,18 @@ def trimData(df, col, t_1=0, t_2=-1):
         print("Trimming to band: ")
         if len(id_x) > 1:
             df = df[id_x[0]:id_x[1]]
+            if df_raw is not None:
+                df_raw = df_raw[id_x[0]:id_x[1]]
             print(round(df[col].iat[0], 2), round(df[col].iat[-1], 2))
         else:
             df = df[id_x[0]:]
+            if df_raw is not None:
+                df_raw = df_raw[id_x[0]:]
             print(round(df[col].iat[0], 2), " : end")
-        return df
+        return df, df_raw
     except Exception as e:
         print(e)
-        return df
+        return df, df_raw
 
 
 # assuming of getting df['T_in', 'T_out', 'Qv'], ro and cp

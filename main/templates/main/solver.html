@@ -75,62 +75,268 @@
             </div>
             <div class="row align-items-center">
                 <div class="col-6">
-                    {% if  not opts.mean_mode == None %}
-                    <div class="form-group">
-                        <label class="form-label">Podaj liczbe próbek</label>
-                        {% if not opts.win_len == True %}
-                        <input class="form-control" type="text" name="win_len" value="{{ opts.win_len }}"
-                            data-toggle="tooltip" data-placement="top" title="Domyślna liczba próbek: 5">
+                    {% if  not opts.mean == None %}
+                    <!-- Jesli jest zaznaczone "Srednia" -->
+                    <div class="form-group" id="filter_options">
+
+                        <!-- jesli jest sav gol filter -->
+                        {% if opts.mean_mode == 'savgol' %}
+                        <label class="form-label" for="mean_context">Wybierz metodę:</label>
+                        <div id="mean_context">
+                            <div class="custom-control custom-radio">
+                                <input type="radio" role="radio" id="id_savgol" name="mean_mode"
+                                    class="custom-control-input" value="savgol" checked="" aria-expanded="true"
+                                    aria-controls="savgol_content" href="#savgol_content" data-toggle="collapse">
+                                <label class="custom-control-label" for="id_savgol">Savitzky-Golay</label>
+                            </div>
+                            <div class="custom-control custom-radio">
+                                <input type="radio" role="radio" id="id_movavg" name="mean_mode"
+                                    class="custom-control-input" value="movavg" aria-expanded="false"
+                                    aria-controls="movavg_content" href="#movavg_content" data-toggle="collapse">
+                                <label class="custom-control-label" for="id_movavg">Średnia ruchoma</label>
+                            </div>
+
+                            <div id="movavg_content" class="collapse" aria-labelledby="id_movavg"
+                                data-parent="#mean_context">
+                                <div class="form-group">
+                                    <label class="form-label">Podaj liczbe próbek</label>
+                                    {% if not opts.win_len_mov == True %}
+                                    <input class="form-control" type="text" name="win_len_mov"
+                                        value="{{ opts.win_len_mov }}" data-toggle="tooltip" data-placement="top"
+                                        title="Domyślna liczba próbek: 5">
+                                    {% else %}
+                                    <input class="form-control" type="text" name="win_len_mov"
+                                        placeholder="Liczba próbek" data-toggle="tooltip" data-placement="top"
+                                        title="Domyślna liczba próbek: 5">
+                                    {% endif %}
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="custom-control custom-switch">
+                                        {% if  not opts.win_pos == None %}
+                                        <input class="custom-control-input" type="checkbox" name="win_pos" value="1"
+                                            checked="" id="id_win_pos">
+                                        {% else %}
+                                        <input class="custom-control-input" type="checkbox" name="win_pos" value="1"
+                                            id="id_win_pos">
+                                        {% endif %}
+                                        <label class="custom-control-label" for="id_win_pos">Uśrednianie do środka okna
+                                            ruchomego</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="savgol_content" class="collapse show" aria-labelledby="id_savgol"
+                                data-parent="#mean_context">
+                                <div class="form-group">
+                                    <label class="form-label">Podaj liczbe próbek</label>
+                                    {% if not opts.win_len_savgol == True %}
+                                    <input class="form-control" type="text" name="win_len_savgol"
+                                        value="{{ opts.win_len_savgol }}" data-toggle="tooltip" data-placement="top"
+                                        title="Domyślna liczba próbek: 5">
+                                    {% else %}
+                                    <input class="form-control" type="text" name="win_len_savgol"
+                                        placeholder="Liczba próbek" data-toggle="tooltip" data-placement="top"
+                                        title="Domyślna liczba próbek: 5">
+                                    {% endif %}
+                                </div>
+
+                                <div class="form-group">
+                                    {% if  not opts.polyorder == None %}
+                                    <input class="form-control" type="text" name="polyorder"
+                                        value="{{ opts.polyorder }}" id="id_polyorder" data-toggle="tooltip"
+                                        data-placement="top" title="Domyślny stopień: 3">
+                                    {% else %}
+                                    <input class="form-control" type="text" name="polyorder" value="" id="id_polyorder"
+                                        data-toggle="tooltip" data-placement="top" title="Domyślny stopień: 3">
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="custom-control custom-switch">
+                                    {% if  not opts.plot_raw == None %}
+                                    <input class="custom-control-input" type="checkbox" name="plot_raw" value="1"
+                                        id="id_plot_raw" checked="">
+                                    {% else %}
+                                    <input class="custom-control-input" type="checkbox" name="plot_raw" value="1"
+                                        id="id_plot_raw">
+                                    {% endif %}
+                                    <label class="custom-control-label" for="id_plot_raw">Pokaż dane przed
+                                        uśrednieniem</label>
+                                </div>
+                            </div>
+                        </div>
                         {% else %}
-                        <input class="form-control" type="text" name="win_len" placeholder="Liczba próbek"
-                            data-toggle="tooltip" data-placement="top" title="Domyślna liczba próbek: 5">
+                        <!-- Jesli jest movinga average -->
+                        <label class="form-label" for="mean_context">Wybierz metodę:</label>
+                        <div id="mean_context">
+                            <div class="custom-control custom-radio">
+                                <input type="radio" role="radio" id="id_savgol" name="mean_mode"
+                                    class="custom-control-input" value="savgol" aria-expanded="false"
+                                    aria-controls="savgol_content" href="#savgol_content" data-toggle="collapse">
+                                <label class="custom-control-label" for="id_savgol">Savitzky-Golay</label>
+                            </div>
+                            <div class="custom-control custom-radio">
+                                <input type="radio" role="radio" id="id_movavg" name="mean_mode" checked=""
+                                    class="custom-control-input" value="movavg" aria-expanded="true"
+                                    aria-controls="movavg_content" href="#movavg_content" data-toggle="collapse">
+                                <label class="custom-control-label" for="id_movavg">Średnia ruchoma</label>
+                            </div>
+
+                            <div id="movavg_content" class="collapse show" aria-labelledby="id_movavg"
+                                data-parent="#mean_context">
+                                <div class="form-group">
+                                    <label class="form-label">Podaj liczbe próbek</label>
+                                    {% if not opts.win_len_mov == True %}
+                                    <input class="form-control" type="text" name="win_len_mov"
+                                        value="{{ opts.win_len_mov }}" data-toggle="tooltip" data-placement="top"
+                                        title="Domyślna liczba próbek: 5">
+                                    {% else %}
+                                    <input class="form-control" type="text" name="win_len_mov"
+                                        placeholder="Liczba próbek" data-toggle="tooltip" data-placement="top"
+                                        title="Domyślna liczba próbek: 5">
+                                    {% endif %}
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="custom-control custom-switch">
+                                        {% if  not opts.win_pos == None %}
+                                        <input class="custom-control-input" type="checkbox" name="win_pos" value="1"
+                                            checked="" id="id_win_pos">
+                                        {% else %}
+                                        <input class="custom-control-input" type="checkbox" name="win_pos" value="1"
+                                            id="id_win_pos">
+                                        {% endif %}
+                                        <label class="custom-control-label" for="id_win_pos">Uśrednianie do środka okna
+                                            ruchomego</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="savgol_content" class="collapse" aria-labelledby="id_savgol"
+                                data-parent="#mean_context">
+                                <div class="form-group">
+                                    <label class="form-label">Podaj liczbe próbek</label>
+                                    {% if not opts.win_len_savgol == True %}
+                                    <input class="form-control" type="text" name="win_len_savgol"
+                                        value="{{ opts.win_len_savgol }}" data-toggle="tooltip" data-placement="top"
+                                        title="Domyślna liczba próbek: 5">
+                                    {% else %}
+                                    <input class="form-control" type="text" name="win_len_savgol"
+                                        placeholder="Liczba próbek" data-toggle="tooltip" data-placement="top"
+                                        title="Domyślna liczba próbek: 5">
+                                    {% endif %}
+                                </div>
+
+                                <div class="form-group">
+                                    {% if  not opts.polyorder == None %}
+                                    <input class="form-control" type="text" name="polyorder"
+                                        value="{{ opts.polyorder }}" id="id_polyorder" data-toggle="tooltip"
+                                        data-placement="top" title="Domyślny stopień: 3">
+                                    {% else %}
+                                    <input class="form-control" type="text" name="polyorder" value="" id="id_polyorder"
+                                        data-toggle="tooltip" data-placement="top" title="Domyślny stopień: 3">
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="custom-control custom-switch">
+                                    {% if  not opts.plot_raw == None %}
+                                    <input class="custom-control-input" type="checkbox" name="plot_raw" value="1"
+                                        id="id_plot_raw" checked="">
+                                    {% else %}
+                                    <input class="custom-control-input" type="checkbox" name="plot_raw" value="1"
+                                        id="id_plot_raw">
+                                    {% endif %}
+                                    <label class="custom-control-label" for="id_plot_raw">Pokaż dane przed
+                                        uśrednieniem</label>
+                                </div>
+                            </div>
+                        </div>
                         {% endif %}
                     </div>
 
-                    <div class="form-group">
-                        <div class="custom-control custom-switch">
-                            {% if  not opts.win_pos == None %}
-                            <input class="custom-control-input" type="checkbox" name="win_pos" value="1" checked=""
-                                id="id_win_pos">
-                            {% else %}
-                            <input class="custom-control-input" type="checkbox" name="win_pos" value="1"
-                                id="id_win_pos">
-                            {% endif %}
-                            <label class="custom-control-label" for="id_win_pos">Uśrednianie do środka okna
-                                ruchomego</label>
-                        </div>
-                    </div>
                     {% else %}
+                    <!-- Jesli nie jest zaznaczone "Srednia" -->
+
                     <div id="mean_context" class="collapse">
-                        <div class="form-group">
-                            <label class="form-label">Podaj liczbe próbek</label>
-                            <input class="form-control" type="text" name="win_len" placeholder="Liczba próbek"
-                                data-toggle="tooltip" data-placement="top" title="Domyślna liczba próbek: 5">
+
+                        <div class="form-group" id="filter_options">
+                            <label class="form-label" for="filter_options">Wybierz metodę:</label>
+                            <div class="custom-control custom-radio">
+                                <input type="radio" role="radio" id="id_savgol" name="mean_mode"
+                                    class="custom-control-input" value="savgol" checked="" aria-expanded="true"
+                                    aria-controls="savgol_content" href="#savgol_content" data-toggle="collapse">
+                                <label class="custom-control-label" for="id_savgol">Savitzky-Golay</label>
+                            </div>
+                            <div class="custom-control custom-radio">
+                                <input type="radio" role="radio" id="id_movavg" name="mean_mode"
+                                    class="custom-control-input" value="movavg" aria-expanded="false"
+                                    aria-controls="movavg_content" href="#movavg_content" data-toggle="collapse">
+                                <label class="custom-control-label" for="id_movavg">Średnia ruchoma</label>
+                            </div>
+                        </div>
+
+                        <div id="movavg_content" class="collapse" aria-labelledby="id_movavg"
+                            data-parent="#mean_context">
+                            <div class="form-group">
+                                <label class="form-label">Podaj liczbe próbek</label>
+                                <input class="form-control" type="text" name="win_len" placeholder="Liczba próbek"
+                                    data-toggle="tooltip" data-placement="top" title="Domyślna liczba próbek: 5">
+                            </div>
+
+                            <div class="form-group">
+                                <div class="custom-control custom-switch">
+                                    <input class="custom-control-input" type="checkbox" name="win_pos" value="1"
+                                        id="id_win_pos">
+                                    <label class="custom-control-label" for="id_win_pos">Uśrednianie do środka okna
+                                        ruchomego</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="savgol_content" class="collapse show" aria-labelledby="id_savgol"
+                            data-parent="#mean_context">
+                            <div class="form-group">
+                                <label class="form-label">Podaj liczbe próbek</label>
+                                <input class="form-control" type="text" name="win_len" placeholder="Liczba próbek"
+                                    data-toggle="tooltip" data-placement="top"
+                                    title="Wartość musi być nieparzysta całkowita">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Podaj stopień wielomianu</label>
+                                <input class="form-control" type="text" name="polyorder"
+                                    placeholder="Stopień wielomianu">
+                            </div>
                         </div>
 
                         <div class="form-group">
                             <div class="custom-control custom-switch">
-                                <input class="custom-control-input" type="checkbox" name="win_pos" value="1"
-                                    id="id_win_pos">
-                                <label class="custom-control-label" for="id_win_pos">Uśrednianie do środka okna
-                                    ruchomego</label>
+                                <input class="custom-control-input" type="checkbox" name="plot_raw" value="1"
+                                    id="id_plot_raw">
+                                <label class="custom-control-label" for="id_plot_raw">Pokaż dane przed
+                                    uśrednieniem</label>
                             </div>
                         </div>
+
+
                     </div>
                     {% endif %}
 
                 </div>
                 <div class="col-6">
                     <div class="custom-control custom-switch">
-                        {% if  not opts.mean_mode == None %}
-                        <input class="custom-control-input" type="checkbox" name="mean_mode" value="1" checked=""
-                            id="id_mean_mode">
+                        {% if  not opts.mean == None %}
+                        <input class="custom-control-input" type="checkbox" name="mean" value="1" checked=""
+                            id="id_mean">
                         {% else %}
-                        <input class="custom-control-input" type="checkbox" name="mean_mode" value="1" id="id_mean_mode"
+                        <input class="custom-control-input" type="checkbox" name="mean" value="1" id="id_mean"
                             role="checkbox" aria-expanded="false" aria-controls="mean_context" href="#mean_context"
                             data-toggle="collapse">
                         {% endif %}
-                        <label class="custom-control-label" for="id_mean_mode">Średnia ruchoma</label>
+                        <label class="custom-control-label" for="id_mean">Uśrednianie</label>
                     </div>
                 </div>
             </div>
@@ -215,7 +421,7 @@
 
                     </tbody>
                 </table>
-                
+
             </div>
             {% endif %}
             <input name="plot_shown" value="{{ plot_shown }}" style="display: none;"></input>
