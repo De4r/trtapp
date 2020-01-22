@@ -105,7 +105,7 @@ def plotMovingAverage(df, window_len=15, min_periods=1, center=False, title=1, y
 
 
 # we pass just our t, T_f and models+lambdas data!
-def plotModels(df, modelParams, lambdas, title=-1, ylabel=0, xlabel=1, *args, **kwargs):
+def plotModels(df, modelParams, lambdas, title=3, ylabel=0, xlabel=1, *args, **kwargs):
     fig = createPlot(df, title=title, ylabel=ylabel, xlabel=xlabel)
     if 'style' in kwargs:
         style = kwargs.get('style')
