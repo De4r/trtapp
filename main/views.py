@@ -33,10 +33,8 @@ def isp_view(request):
     data = zip(plot_div, stats)
     return render(request, 'main/isp.html',
                   context={'files': uploaded_files,
-                           'plot_div': plot_div,
-                           'file': f,
+                           'file_chosen': f,
                            'plot_shown': True,
-                           'stats': stats,
                            'data': data,
                            })
 

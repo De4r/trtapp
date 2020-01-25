@@ -13,7 +13,11 @@
                         <!-- <label for="id_chosen_file">Wybierz plik</label> -->
                         <select class="custom-select" id="id_chosen_file" name='chosen_file'>
                             {% for file in files %}
-                            <option> {{ file.file_name }} </option>
+                            {% if file_chosen.file_name == file.file_name %}
+                            <option selected="selected"> {{ file.file_name }} </option>
+                            {% else %}
+                            <option>{{ file.file_name }}</option>
+                            {% endif %}
                             {% endfor %}
                         </select>
                     </div>
@@ -29,11 +33,11 @@
         <div class="row">
             <div class="col text-center">
                 <label for="id_file_name"> Plik: </label>
-                <h4 id="id_file_name"> {{file.file_name }} </h4>
+                <h4 id="id_file_name"> {{file_chosen.file_name }} </h4>
             </div>
             <div class="col text-center">
                 <label for="id_upload_Date"> Data dodania pliku: </label>
-                <h4 id="id_upload_Date"> {{ file.upload_date }} </h4id="id_file_name">
+                <h4 id="id_upload_Date"> {{ file_chosen.upload_date }} </h4id="id_file_name">
             </div>
         </div>
         <div>
@@ -44,7 +48,7 @@
             <div id="id_file_desc">
                 <p class="lead">
                     
-                    <h5 class="text-justify"> {{ file.file_desc }} </h5>
+                    <h5 class="text-justify"> {{ file_chosen.file_desc }} </h5>
                 </p>
             </div>
         </div>
