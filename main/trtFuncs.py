@@ -236,6 +236,7 @@ class Trt():
                     self.df[cols], window_len=window_len, order=order)
 
     def plot_data(self, xlabel=0):
+        print(self.df.head())
         try:
             plot_div = []
             if self.df_raw is not None:
