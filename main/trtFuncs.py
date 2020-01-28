@@ -66,7 +66,7 @@ class Trt():
             self.df_raw = None
 
     def calc_params(self):
-        if self.check_bool('fit_lin') and self.check_bool('show_tf'):
+        if self.check_multiple_bool(['log_scale', 'show_tf', 'fit_lin']):
             if self.model.H is not None and self.modelParams is not None:
                 self.lam = calculateLambda(
                     Q=self.Q_mean, H=self.model.H, k=self.modelParams[0])
@@ -160,7 +160,8 @@ class Trt():
                 print("No velocity provided")
 
     def handle_fit_model(self):
-        if self.check_bool('fit_lin') and self.check_bool('show_tf'):
+        # if self.check_bool('fit_lin') and self.check_bool('show_tf'):
+        if self.check_multiple_bool(['log_scale', 'show_tf', 'fit_lin']):
             self.modelParams = fitModelSciPy(
                 self.df[[temp_cols[0], temp_cols[-1]]])
 
@@ -242,7 +243,7 @@ class Trt():
             if self.df_raw is not None:
                 # if T_f plot, then 1st
                 if 'T_f' in self.df.columns.values:
-                    if self.check_bool('fit_lin'):
+                    if self.check_multiple_bool(['log_scale', 'show_tf', 'fit_lin']):
                         fig = plotModels(
                             self.df[['t', 'T_f']], self.modelParams, 0, style=0)
                     else:
@@ -302,7 +303,7 @@ class Trt():
             else:
                 # if T_f plot, then 1st
                 if 'T_f' in self.df.columns.values:
-                    if self.check_bool('fit_lin'):
+                    if self.check_multiple_bool(['log_scale', 'show_tf', 'fit_lin']):
                         fig = plotModels(
                             self.df[['t', 'T_f']], self.modelParams, 0, style=0)
                     else:
@@ -339,6 +340,15 @@ class Trt():
                 return plot_div
         except Exception as e:
             return e
+
+    def check_multiple_bool(self, args_list):
+        if isinstance(args_list, list):
+            for arg in args_list:
+                if self.check_bool(arg):
+                    continue
+                else:
+                    return False
+            return True
 
     def check_bool(self, arg):
         if arg in self.options and int(self.options[arg]) == True:

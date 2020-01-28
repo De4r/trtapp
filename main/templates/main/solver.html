@@ -351,15 +351,18 @@
                         {% if  not opts.fit_lin == None %}
                         <input class="custom-control-input" type="checkbox" name="fit_lin" value="1" checked=""
                             id="id_fit_lin">
-                        <label class="custom-control-label" for="id_fit_lin">Dopasuj model liniowy</label>
+                        <label class="custom-control-label" for="id_fit_lin" data-toggle="tooltip" data-placement="top"
+                        title="Wymaga skali logarytmicznej oraz wykresu funkcji TRT">Dopasuj model liniowy</label>
                         {% elif not opts.show_tf == None %}
                         <input class="custom-control-input" type="checkbox" name="fit_lin" value="1" id="id_fit_lin">
-                        <label class="custom-control-label" for="id_fit_lin">Dopasuj model liniowy</label>
+                        <label class="custom-control-label" for="id_fit_lin" data-toggle="tooltip" data-placement="top"
+                        title="Wymaga skali logarytmicznej oraz wykresu funkcji TRT">Dopasuj model liniowy</label>
                         {% else %}
                         <div id="fit_lin_div" class="collapse">
                             <input class="custom-control-input" type="checkbox" name="fit_lin" value="1"
                                 id="id_fit_lin">
-                            <label class="custom-control-label" for="id_fit_lin">Dopasuj model liniowy</label>
+                            <label class="custom-control-label" for="id_fit_lin"  data-toggle="tooltip" data-placement="top"
+                            title="Wymaga skali logarytmicznej oraz wykresu funkcji TRT">Dopasuj model liniowy</label>
                         </div>
                         {% endif %}
                     </div>
